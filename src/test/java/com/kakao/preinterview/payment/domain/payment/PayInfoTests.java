@@ -42,4 +42,12 @@ class PayInfoTests {
                 Arguments.of(12, BigDecimal.valueOf(100000000000L))
         );
     }
+
+    @DisplayName("동등성 비교가 가능해야 한다.")
+    @Test
+    void equalTest() {
+        PayInfo payInfo1 = PayInfo.create(installmentMonths, payAmount, payStatus);
+        PayInfo payInfo2 = PayInfo.create(installmentMonths, payAmount, payStatus);
+        assertThat(payInfo1).isEqualTo(payInfo2);
+    }
 }

@@ -1,6 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class PayInfo {
     private final int MIN_INSTALLMENT_MONTHS = 0;
@@ -37,5 +38,32 @@ public class PayInfo {
 
     public static PayInfo create(int installmentMonths, BigDecimal payAmount, PayStatus payStatus) {
         return new PayInfo(installmentMonths, payAmount, payStatus);
+    }
+
+    public Integer getInstallmentMonths() {
+        return installmentMonths;
+    }
+
+    public BigDecimal getPayAmount() {
+        return payAmount;
+    }
+
+    public PayStatus getPayStatus() {
+        return payStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PayInfo payInfo = (PayInfo) o;
+        return Objects.equals(installmentMonths, payInfo.installmentMonths) &&
+                Objects.equals(payAmount, payInfo.payAmount) &&
+                payStatus == payInfo.payStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(installmentMonths, payAmount, payStatus);
     }
 }
