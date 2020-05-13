@@ -32,4 +32,12 @@ public class Parser {
         }
         return value + result.toString();
     }
+
+    public String stringLeftParse() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < limit - value.length(); i ++) {
+            result.append(" ");
+        }
+        return value + result.toString();
+    }
 }

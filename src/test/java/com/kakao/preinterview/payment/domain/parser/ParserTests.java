@@ -33,4 +33,13 @@ class ParserTests {
         String parsed = parser.numberLeftParse();
         assertThat(parsed).isEqualTo(result);
     }
+
+    @DisplayName("문자열 좌측 정렬 파싱 수행(좌측정렬 빈자리 공백) 확인")
+    @ParameterizedTest
+    @CsvSource(value = { "4:aa:'aa  '", "4:aaa:'aaa ' ", "5:aaa:'aaa  '" }, delimiter = ':')
+    void StringLeftTest(int limit, String value, String result) {
+        Parser parser = new Parser(limit, value);
+        String parsed = parser.stringLeftParse();
+        assertThat(parsed).isEqualTo(result);
+    }
 }
