@@ -1,6 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Tax {
     private BigDecimal value;
@@ -15,7 +16,31 @@ public class Tax {
     }
 
     private static void manualValidation(BigDecimal value, BigDecimal payAmount) {
-        if (BigDecimal.ZERO.compareTo(value) > 0 || payAmount.compareTo(value) < 0)
-            throw new IllegalArgumentException();
+        if (value == null || payAmount == null) throw new IllegalArgumentException();
+        if (BigDecimal.ZERO.compareTo(value) > 0) throw new IllegalArgumentException();
+        if (payAmount.compareTo(value) < 0) throw new IllegalArgumentException();
+    }
+
+    public static BigDecimal autoCreate(BigDecimal payAmount) {
+        autoValidation(payAmount);
+        return payAmount.divide(BigDecimal.valueOf(11), BigDecimal.ROUND_HALF_UP);
+    }
+
+    private static void autoValidation(BigDecimal payAmount) {
+        if (payAmount == null) throw new IllegalArgumentException();
+        if (BigDecimal.ZERO.compareTo(payAmount) >= 0) throw new IllegalArgumentException();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tax tax = (Tax) o;
+        return Objects.equals(value, tax.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
