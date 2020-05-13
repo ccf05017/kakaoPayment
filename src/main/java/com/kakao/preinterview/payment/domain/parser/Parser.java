@@ -10,34 +10,26 @@ public class Parser {
     }
 
     public String numberDefaultParse() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < limit - value.length(); i ++) {
-            result.append(" ");
-        }
-        return result.toString() + value;
+        return emptySpaceGenerate(" ") + value;
     }
 
     public String numberZeroParse() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < limit - value.length(); i ++) {
-            result.append("0");
-        }
-        return result.toString() + value;
+        return emptySpaceGenerate("0") + value;
     }
 
     public String numberLeftParse() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < limit - value.length(); i ++) {
-            result.append(" ");
-        }
-        return value + result.toString();
+        return value + emptySpaceGenerate(" ");
     }
 
     public String stringLeftParse() {
+        return value + emptySpaceGenerate(" ");
+    }
+
+    private String emptySpaceGenerate(String marker) {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < limit - value.length(); i ++) {
-            result.append(" ");
+        for (int i = 0; i < limit - value.length(); i++) {
+            result.append(marker);
         }
-        return value + result.toString();
+        return result.toString();
     }
 }
