@@ -24,4 +24,12 @@ public class Parser {
         }
         return result.toString() + value;
     }
+
+    public String numberLeftParse() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < limit - value.length(); i ++) {
+            result.append(" ");
+        }
+        return value + result.toString();
+    }
 }
