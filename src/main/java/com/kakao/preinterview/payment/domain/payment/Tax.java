@@ -10,6 +10,12 @@ public class Tax {
     }
 
     public static Tax manualCreate(BigDecimal value, BigDecimal payAmount) {
+        manualValidation(value, payAmount);
         return new Tax(value);
+    }
+
+    private static void manualValidation(BigDecimal value, BigDecimal payAmount) {
+        if (BigDecimal.ZERO.compareTo(value) > 0 || payAmount.compareTo(value) < 0)
+            throw new IllegalArgumentException();
     }
 }
