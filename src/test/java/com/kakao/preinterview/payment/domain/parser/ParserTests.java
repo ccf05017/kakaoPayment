@@ -15,4 +15,13 @@ class ParserTests {
         String parsed = parser.defaultNumberParse();
         assertThat(parsed).isEqualTo(result);
     }
+
+    @DisplayName("숫자 우측 정렬 0 파싱 수행(우측 정렬 빈자리 0) 확인")
+    @ParameterizedTest
+    @CsvSource(value = { "4:33:'0033'", "4:421:'0421' ", "5:421:'00421'" }, delimiter = ':')
+    void numberZeroTest(int limit, String value, String result) {
+        Parser parser = new Parser(limit, value);
+        String parsed = parser.numberZeroParse();
+        assertThat(parsed).isEqualTo(result);
+    }
 }

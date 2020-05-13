@@ -16,4 +16,12 @@ public class Parser {
         }
         return result.toString() + value;
     }
+
+    public String numberZeroParse() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < limit - value.length(); i ++) {
+            result.append("0");
+        }
+        return result.toString() + value;
+    }
 }
