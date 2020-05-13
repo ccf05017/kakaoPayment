@@ -12,7 +12,7 @@ class ParserTests {
     @CsvSource(value = { "4:33:'  33'", "4:421:' 421' ", "5:421:'  421'" }, delimiter = ':')
     void numberDefaultTest(int limit, String value, String result) {
         Parser parser = new Parser(limit, value);
-        String parsed = parser.defaultNumberParse();
+        String parsed = parser.numberDefaultParse();
         assertThat(parsed).isEqualTo(result);
     }
 

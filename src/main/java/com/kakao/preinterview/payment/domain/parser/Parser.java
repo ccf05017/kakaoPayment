@@ -9,7 +9,7 @@ public class Parser {
         this.value = value;
     }
 
-    public String defaultNumberParse() {
+    public String numberDefaultParse() {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < limit - value.length(); i ++) {
             result.append(" ");
