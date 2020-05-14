@@ -12,7 +12,10 @@ class PaymentTests {
     private Integer installmentMonths;
     private BigDecimal payAmount;
     private PayStatus payStatus;
-    private String encryptedCardInfo;
+    private Long cardNumber;
+    private Integer duration;
+    private Integer cvc;
+    private String key;
     private Tax tax;
 
     @BeforeEach
@@ -20,13 +23,24 @@ class PaymentTests {
         installmentMonths = 12;
         payAmount = BigDecimal.valueOf(1000);
         payStatus = PayStatus.PAY;
-        encryptedCardInfo = "testEncrypted";
+        cardNumber = 1111222233334444L;
+        duration = 1231;
+        cvc = 123;
+        key = "testKey";
     }
 
     @DisplayName("할부개월수, 결제금액, 결제타입, 암호화 된 카드정보를 입력받아서 객체를 만들 수 있다. (부가가치세 자동 계산")
     @Test
-    public void create() {
-        Payment payment = new Payment(installmentMonths, payAmount, payStatus, encryptedCardInfo);
+    public void create() throws Exception {
+        Payment payment = new Payment(
+                installmentMonths,
+                payAmount,
+                payStatus,
+                cardNumber,
+                duration,
+                cvc,
+                key
+        );
         assertThat(payment).isNotNull();
         assertThat(payment.getTax()).isEqualTo(Tax.autoCreate(payAmount));
     }
