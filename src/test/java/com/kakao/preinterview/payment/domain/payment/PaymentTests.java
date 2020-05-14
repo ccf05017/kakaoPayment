@@ -28,5 +28,6 @@ class PaymentTests {
     public void create() {
         Payment payment = new Payment(installmentMonths, payAmount, payStatus, encryptedCardInfo);
         assertThat(payment).isNotNull();
+        assertThat(payment.getTax()).isEqualTo(Tax.autoCreate(payAmount));
     }
 }

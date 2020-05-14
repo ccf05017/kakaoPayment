@@ -16,6 +16,15 @@ public class Payment {
     }
 
     public Payment(int installmentMonths, BigDecimal payAmount, PayStatus payStatus, String encryptedCardInfo) {
-//        this(null, PayInfo.create(installmentMonths, payAmount, payStatus), encryptedCardInfo, Tax.autoCreate(payAmount));
+        this(
+                null,
+                PayInfo.create(installmentMonths, payAmount, payStatus),
+                encryptedCardInfo,
+                Tax.autoCreate(payAmount)
+        );
+    }
+
+    public Tax getTax() {
+        return tax;
     }
 }
