@@ -21,9 +21,10 @@ public class Tax {
         if (payAmount.compareTo(value) < 0) throw new IllegalArgumentException();
     }
 
-    public static BigDecimal autoCreate(BigDecimal payAmount) {
+    public static Tax autoCreate(BigDecimal payAmount) {
         autoValidation(payAmount);
-        return payAmount.divide(BigDecimal.valueOf(11), BigDecimal.ROUND_HALF_UP);
+        BigDecimal autoCreatedValue = payAmount.divide(BigDecimal.valueOf(11), BigDecimal.ROUND_HALF_UP);
+        return new Tax(autoCreatedValue);
     }
 
     private static void autoValidation(BigDecimal payAmount) {

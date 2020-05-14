@@ -6,13 +6,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ParserTests {
+class ParserTypeTests {
     @DisplayName("숫자 기본정렬 수행(우측 정렬 빈 자리 공백) 확인")
     @ParameterizedTest
     @CsvSource(value = { "4:33:'  33'", "4:421:' 421' ", "5:421:'  421'" }, delimiter = ':')
-    void numberDefaultTest(int limit, String value, String result) {
-        Parser parser = new Parser(limit, value);
-        String parsed = parser.numberDefaultParse();
+    void numberDefaultParseTest(int limit, String value, String result) {
+        String parsed = ParserType.NUMBER_DEFAULT.parse(limit, value);
         assertThat(parsed).isEqualTo(result);
     }
 
@@ -20,8 +19,7 @@ class ParserTests {
     @ParameterizedTest
     @CsvSource(value = { "4:33:'0033'", "4:421:'0421' ", "5:421:'00421'" }, delimiter = ':')
     void numberZeroTest(int limit, String value, String result) {
-        Parser parser = new Parser(limit, value);
-        String parsed = parser.numberZeroParse();
+        String parsed = ParserType.NUMBER_RIGHT.parse(limit, value);
         assertThat(parsed).isEqualTo(result);
     }
 
@@ -29,8 +27,7 @@ class ParserTests {
     @ParameterizedTest
     @CsvSource(value = { "4:33:'33  '", "4:421:'421 ' ", "5:421:'421  '" }, delimiter = ':')
     void numberLeftTest(int limit, String value, String result) {
-        Parser parser = new Parser(limit, value);
-        String parsed = parser.numberLeftParse();
+        String parsed = ParserType.NUMBER_LEFT.parse(limit, value);
         assertThat(parsed).isEqualTo(result);
     }
 
@@ -38,8 +35,7 @@ class ParserTests {
     @ParameterizedTest
     @CsvSource(value = { "4:aa:'aa  '", "4:aaa:'aaa ' ", "5:aaa:'aaa  '" }, delimiter = ':')
     void StringLeftTest(int limit, String value, String result) {
-        Parser parser = new Parser(limit, value);
-        String parsed = parser.stringLeftParse();
+        String parsed = ParserType.STRING_LEFT.parse(limit, value);
         assertThat(parsed).isEqualTo(result);
     }
 }
