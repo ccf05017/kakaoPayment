@@ -3,7 +3,18 @@ package com.kakao.preinterview.payment.domain.parser;
 public enum ParserType {
     NUMBER_DEFAULT("nb", (limit, value) -> {
         return emptySpaceGenerate(" ", limit, value) + value;
-    });
+    }),
+    NUMBER_RIGHT("nr", (limit, value) -> {
+        return emptySpaceGenerate("0", limit, value) + value;
+    }),
+    NUMBER_LEFT("nl", (limit, value) -> {
+        return value + emptySpaceGenerate(" ", limit, value);
+    }),
+    STRING_LEFT("sl", (limit, value) -> {
+        return value + emptySpaceGenerate(" ", limit, value);
+    }),
+    ;
+
 
     private String typeName;
     private DoParse doParse;
