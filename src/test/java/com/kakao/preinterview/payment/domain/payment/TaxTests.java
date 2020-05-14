@@ -48,7 +48,8 @@ class TaxTests {
     @DisplayName("세금을 자동으로 생성 시 소수점 이하 반올림해서 계산한다.")
     @Test
     void autoCreateTest() {
-        assertThat(Tax.autoCreate(payAmount)).isEqualTo(BigDecimal.valueOf(91));
+        BigDecimal value = BigDecimal.valueOf(91);
+        assertThat(Tax.autoCreate(payAmount)).isEqualTo(Tax.manualCreate(value, payAmount));
     }
 
     @DisplayName("null이나 0이하의 값으로 세금을 자동 생성할 수 없다.")
