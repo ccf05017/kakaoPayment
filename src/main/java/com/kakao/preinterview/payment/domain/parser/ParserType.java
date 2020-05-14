@@ -17,15 +17,15 @@ public enum ParserType {
 
 
     private String typeName;
-    private DoParse doParse;
+    private Parser parser;
 
-    ParserType(String typeName, DoParse doParse) {
+    ParserType(String typeName, Parser parser) {
         this.typeName = typeName;
-        this.doParse = doParse;
+        this.parser = parser;
     }
 
     public String parse(int limit, String value) {
-        return doParse.doParse(limit, value);
+        return parser.parse(limit, value);
     }
 
     private static String emptySpaceGenerate(String marker, int limit, String value) {
