@@ -10,4 +10,8 @@ public class EncryptedCardInfo {
     public static EncryptedCardInfo create(CardInfo cardInfo, String key) throws Exception {
         return new EncryptedCardInfo(cardInfo.encrypt(key));
     }
+
+    public String getEncryptedValue() {
+        return encryptedValue;
+    }
 }

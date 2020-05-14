@@ -21,4 +21,13 @@ class EncryptedCardInfoTests {
     void createTest() throws Exception {
         assertThat(EncryptedCardInfo.create(cardInfo, key)).isNotNull();
     }
+
+    @DisplayName("암호화 된 데이터는 원문 내용을 알아볼 수 없다.")
+    @Test
+    void encryptionTest() throws Exception {
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(cardInfo, key);
+        assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getCardNumber().toString());
+        assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getCvc().toString());
+        assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getDuration().toString());
+    }
 }
