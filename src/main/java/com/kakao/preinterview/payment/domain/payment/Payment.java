@@ -32,6 +32,24 @@ public class Payment {
         );
     }
 
+    public Payment(
+            int installmentMonths,
+            BigDecimal payAmount,
+            PayStatus payStatus,
+            Long cardNumber,
+            Integer duration,
+            Integer cvc,
+            String key,
+            Long taxAmount
+    ) throws Exception {
+        this(
+                null,
+                PayInfo.create(installmentMonths, payAmount, payStatus),
+                EncryptedCardInfo.create(CardInfo.create(cardNumber, duration, cvc), key),
+                Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount)
+        );
+    }
+
     public Tax getTax() {
         return tax;
     }
