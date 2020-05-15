@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.paymentHistory;
+package com.kakao.preinterview.payment.domain.payment;
 
 import com.kakao.preinterview.payment.utils.EncryptDecrypt;
 

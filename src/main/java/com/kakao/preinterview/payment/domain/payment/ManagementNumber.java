@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.paymentHistory;
+package com.kakao.preinterview.payment.domain.payment;
 
 import java.util.Objects;
 import java.util.UUID;

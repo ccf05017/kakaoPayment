@@ -1,8 +1,8 @@
-package com.kakao.preinterview.payment.domain.paymentHistory;
+package com.kakao.preinterview.payment.domain.payment;
 
 import java.math.BigDecimal;
 
-public class PaymentHistory {
+public class Payment {
     private Long id;
     private ManagementNumber managementNumber;
     private ManagementNumber relatedManagementNumber;
@@ -10,7 +10,7 @@ public class PaymentHistory {
     private EncryptedCardInfo encryptedCardInfo;
     private Tax tax;
 
-    protected PaymentHistory(
+    protected Payment(
             Long id,
             ManagementNumber managementNumber,
             ManagementNumber relatedManagementNumber,

@@ -29,7 +29,7 @@
 - [X] Parser
     - [X] 현재 기능을 enum으로 추출해서 응집도를 높인다.
 
-- [ ] PaymentHistory
+- [ ] Payment
     - [X] 관리번호, PayInfo, CardInfo(암호화 된), Tax를 갖는다.
         - [X] 관리번호 추가
         - [X] 연관된 Payment 관리번호 추가 (결제 시엔 null, 결제 취소 시에는 결제 번호)
@@ -44,7 +44,8 @@
     - [X] PaymentFactory 구현
         - [X] Payment 생성 관련 책임 자체가 복잡해지기 때문에 Factory로 추출
     - [ ] DB에 해당 값을 저장해야 한다.
-    
+    - [ ] CardInfo를 속성으로 갖는다.(DB에는 저장하지 않는다. 암호화 된 것만 저장한다.)
+    - [ ] 카드사 전송용 String data로 바꿔야 한다.    
 - [ ] CardInfo
     - [ ] id, 카드사용 정보를 갖는다.
         - [ ] 카드사용 정보는 Payment 정보를 기반으로 만들어진 String 데이터다

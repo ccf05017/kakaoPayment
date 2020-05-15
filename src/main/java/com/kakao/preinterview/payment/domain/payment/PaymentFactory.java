@@ -1,9 +1,9 @@
-package com.kakao.preinterview.payment.domain.paymentHistory;
+package com.kakao.preinterview.payment.domain.payment;
 
 import java.math.BigDecimal;
 
-public class PaymentHistoryFactory {
-    public static PaymentHistory createPaymentAutoTax(
+public class PaymentFactory {
+    public static Payment createPaymentAutoTax(
             int installmentMonths,
             BigDecimal payAmount,
             PayStatus payStatus,
@@ -12,7 +12,7 @@ public class PaymentHistoryFactory {
             Integer cvc,
             String key
     ) throws Exception {
-        return new PaymentHistory(
+        return new Payment(
                 null,
                 ManagementNumber.create(),
                 null,
@@ -22,7 +22,7 @@ public class PaymentHistoryFactory {
         );
     }
 
-    public static PaymentHistory createPaymentManualTax(
+    public static Payment createPaymentManualTax(
             int installmentMonths,
             BigDecimal payAmount,
             PayStatus payStatus,
@@ -32,7 +32,7 @@ public class PaymentHistoryFactory {
             String key,
             Long taxAmount
     ) throws Exception {
-        return new PaymentHistory(
+        return new Payment(
                 null,
                 ManagementNumber.create(),
                 null,
@@ -42,25 +42,25 @@ public class PaymentHistoryFactory {
         );
     }
 
-    public static PaymentHistory createPaymentCancelAllByAutoTax(PaymentHistory paymentHistory) {
-        return new PaymentHistory(
+    public static Payment createPaymentCancelAllByAutoTax(Payment payment) {
+        return new Payment(
                 null,
                 ManagementNumber.create(),
-                paymentHistory.getManagementNumber(),
-                PayInfo.create(paymentHistory.getInstallmentMonths(), paymentHistory.getPayAmount(), PayStatus.PAY_CANCEL),
-                paymentHistory.getEncryptedCardInfo(),
-                paymentHistory.getTax()
+                payment.getManagementNumber(),
+                PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                payment.getEncryptedCardInfo(),
+                payment.getTax()
         );
     }
 
-    public static PaymentHistory createPaymentCancelAllByManualTax(PaymentHistory paymentHistory, BigDecimal taxValue) {
-        return new PaymentHistory(
+    public static Payment createPaymentCancelAllByManualTax(Payment payment, BigDecimal taxValue) {
+        return new Payment(
                 null,
                 ManagementNumber.create(),
-                paymentHistory.getManagementNumber(),
-                PayInfo.create(paymentHistory.getInstallmentMonths(), paymentHistory.getPayAmount(), PayStatus.PAY_CANCEL),
-                paymentHistory.getEncryptedCardInfo(),
-                Tax.createManualCancelAllTax(paymentHistory.getTax(), taxValue)
+                payment.getManagementNumber(),
+                PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                payment.getEncryptedCardInfo(),
+                Tax.createManualCancelAllTax(payment.getTax(), taxValue)
         );
     }
 }
