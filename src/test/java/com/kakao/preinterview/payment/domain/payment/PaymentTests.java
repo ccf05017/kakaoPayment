@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PaymentTests {
     private Integer installmentMonths;
@@ -97,12 +98,25 @@ class PaymentTests {
         Payment canceledPayment = Payment.createPaymentCancelAllByManualTax(payment, requestTaxValue);
 
         assertThat(canceledPayment.getRelatedManagementNumber()).isEqualTo(payment.getManagementNumber());
-        assertThat(canceledPayment.getTax()).isEqualTo(Tax.createManualCancelTax(payment.getTax(), requestTaxValue));
+        assertThat(canceledPayment.getTax()).isEqualTo(Tax.createManualCancelAllTax(payment.getTax(), requestTaxValue));
     }
 
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 높은 금액으로 요청 시 실패")
     @Test
-    void createPaymentCancelAllByManualTaxFail() {
+    void createPaymentCancelAllByManualTaxFail() throws Exception {
+        Payment payment = Payment.createPaymentManualTax(
+                installmentMonths,
+                payAmount,
+                PayStatus.PAY,
+                cardNumber,
+                duration,
+                cvc,
+                key,
+                taxAmount
+        );
+        BigDecimal requestTaxValue = BigDecimal.valueOf(100000);
 
+        assertThatThrownBy(() -> Payment.createPaymentCancelAllByManualTax(payment, requestTaxValue))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

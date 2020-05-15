@@ -65,4 +65,19 @@ class TaxTests {
                 BigDecimal.valueOf(-1)
         );
     }
+
+    @DisplayName("결제 세금보다 높은 금액으로 결제전액취소용 세금 생성 시 생성 실패")
+    @ParameterizedTest
+    @MethodSource("greaterThanOriginalTaxValue")
+    void createManualCancelAllTaxFailWithInvalidValueTest(BigDecimal greaterThanOriginalTaxValue) {
+        Tax originalValue = Tax.autoCreate(BigDecimal.valueOf(1));
+        assertThatThrownBy(() -> Tax.createManualCancelAllTax(originalValue, greaterThanOriginalTaxValue))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+    public static Stream<BigDecimal> greaterThanOriginalTaxValue() {
+        return Stream.of(
+                BigDecimal.valueOf(10000000),
+                BigDecimal.valueOf(100000000)
+        );
+    }
 }

@@ -83,7 +83,7 @@ public class Payment {
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
                 payment.getEncryptedCardInfo(),
-                Tax.createManualCancelTax(payment.getTax(), taxValue)
+                Tax.createManualCancelAllTax(payment.getTax(), taxValue)
         );
     }
 
