@@ -2,7 +2,7 @@ package com.kakao.preinterview.payment.domain.paymentHistory;
 
 import java.math.BigDecimal;
 
-public class PaymentFactory {
+public class PaymentHistoryFactory {
     public static PaymentHistory createPaymentAutoTax(
             int installmentMonths,
             BigDecimal payAmount,

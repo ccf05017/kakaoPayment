@@ -32,7 +32,7 @@ class PaymentHistoryFactoryTests {
     @DisplayName("부가가치세 자동계산 결제 객체 생성")
     @Test
     void createPaymentByAutoTax() throws Exception {
-        PaymentHistory paymentHistory = PaymentFactory.createPaymentAutoTax(
+        PaymentHistory paymentHistory = PaymentHistoryFactory.createPaymentAutoTax(
                 installmentMonths,
                 payAmount,
                 PayStatus.PAY,
@@ -48,7 +48,7 @@ class PaymentHistoryFactoryTests {
     @DisplayName("부가가치세 수동계산 결제 객체 생성")
     @Test
     void createPaymentByManualTax() throws Exception {
-        PaymentHistory paymentHistory = PaymentFactory.createPaymentManualTax(
+        PaymentHistory paymentHistory = PaymentHistoryFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
                 PayStatus.PAY,
@@ -65,7 +65,7 @@ class PaymentHistoryFactoryTests {
     @DisplayName("부가가치세 자동계산 결제전액취소 객체 생성")
     @Test
     void createPaymentCancelAllByAutoTax() throws Exception {
-        PaymentHistory paymentHistory = PaymentFactory.createPaymentManualTax(
+        PaymentHistory paymentHistory = PaymentHistoryFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
                 PayStatus.PAY,
@@ -75,7 +75,7 @@ class PaymentHistoryFactoryTests {
                 key,
                 taxAmount
         );
-        PaymentHistory canceledPaymentHistory = PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory);
+        PaymentHistory canceledPaymentHistory = PaymentHistoryFactory.createPaymentCancelAllByAutoTax(paymentHistory);
 
         assertThat(canceledPaymentHistory.getRelatedManagementNumber()).isEqualTo(paymentHistory.getManagementNumber());
         assertThat(canceledPaymentHistory.getTax()).isEqualTo(paymentHistory.getTax());
@@ -84,7 +84,7 @@ class PaymentHistoryFactoryTests {
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 낮은 금액으로 요청 시 성공")
     @Test
     void createPaymentCancelAllByManualTaxSuccess() throws Exception {
-        PaymentHistory paymentHistory = PaymentFactory.createPaymentManualTax(
+        PaymentHistory paymentHistory = PaymentHistoryFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
                 PayStatus.PAY,
@@ -95,7 +95,7 @@ class PaymentHistoryFactoryTests {
                 taxAmount
         );
         BigDecimal requestTaxValue = BigDecimal.valueOf(1);
-        PaymentHistory canceledPaymentHistory = PaymentFactory.createPaymentCancelAllByManualTax(paymentHistory, requestTaxValue);
+        PaymentHistory canceledPaymentHistory = PaymentHistoryFactory.createPaymentCancelAllByManualTax(paymentHistory, requestTaxValue);
 
         assertThat(canceledPaymentHistory.getRelatedManagementNumber()).isEqualTo(paymentHistory.getManagementNumber());
         assertThat(canceledPaymentHistory.getTax()).isEqualTo(Tax.createManualCancelAllTax(paymentHistory.getTax(), requestTaxValue));
@@ -104,7 +104,7 @@ class PaymentHistoryFactoryTests {
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 높은 금액으로 요청 시 실패")
     @Test
     void createPaymentCancelAllByManualTaxFail() throws Exception {
-        PaymentHistory paymentHistory = PaymentFactory.createPaymentManualTax(
+        PaymentHistory paymentHistory = PaymentHistoryFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
                 PayStatus.PAY,
@@ -116,7 +116,7 @@ class PaymentHistoryFactoryTests {
         );
         BigDecimal requestTaxValue = BigDecimal.valueOf(100000);
 
-        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(paymentHistory, requestTaxValue))
+        assertThatThrownBy(() -> PaymentHistoryFactory.createPaymentCancelAllByManualTax(paymentHistory, requestTaxValue))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
