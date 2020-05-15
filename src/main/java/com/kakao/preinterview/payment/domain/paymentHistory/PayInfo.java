@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.paymentHistory;
 
 import java.math.BigDecimal;
 import java.util.Objects;

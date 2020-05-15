@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.paymentHistory;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -30,6 +30,15 @@ public class Tax {
     private static void autoValidation(BigDecimal payAmount) {
         if (payAmount == null) throw new IllegalArgumentException();
         if (BigDecimal.ZERO.compareTo(payAmount) >= 0) throw new IllegalArgumentException();
+    }
+
+    public static Tax createManualCancelAllTax(Tax originalTax, BigDecimal requestTaxValue) {
+        if (originalTax.getValue().compareTo(requestTaxValue) < 0) throw new IllegalArgumentException();
+        return new Tax(requestTaxValue);
+    }
+
+    public BigDecimal getValue() {
+        return value;
     }
 
     @Override
