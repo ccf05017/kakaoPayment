@@ -10,7 +10,7 @@ public class ManagementNumber {
                 .substring(0,20);
     }
 
-    public static boolean checkEqualPossibility(int recursiveTime) {
+    protected static boolean checkEqualPossibility(int recursiveTime) {
         String standard = ManagementNumber.create();
         for (int i = 0; i < recursiveTime; i ++) {
             String newMgmt = ManagementNumber.create();

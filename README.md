@@ -31,6 +31,7 @@
 
 - [ ] Payment
     - [X] 관리번호, PayInfo, CardInfo(암호화 된), Tax를 갖는다.
+        - [ ] 연관된 Payment 관리번호 추가
     - [X] CardInfo가 String 타입이어서 암호화를 보장할 수 없기 때문에 따로 객체를 만든다.
     - [X] Tax를 수동으로 입력받아서 객체를 만들 수 있다.
     - [X] Tax를 받지 않고도 객체를 만들 수 있다.
