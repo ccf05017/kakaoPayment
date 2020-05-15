@@ -1,21 +1,45 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ManagementNumber {
-    public static String create() {
+    private String value;
+
+    private ManagementNumber(String value) {
+        this.value = value;
+    }
+
+    public static ManagementNumber create() {
         UUID uuid = UUID.randomUUID();
-        return uuid.toString()
+        return new ManagementNumber(uuid.toString()
                 .replaceAll("-", "")
-                .substring(0,20);
+                .substring(0,20));
     }
 
     protected static boolean checkEqualPossibility(int recursiveTime) {
-        String standard = ManagementNumber.create();
+        ManagementNumber standard = ManagementNumber.create();
         for (int i = 0; i < recursiveTime; i ++) {
-            String newMgmt = ManagementNumber.create();
+            ManagementNumber newMgmt = ManagementNumber.create();
             if (standard.equals(newMgmt)) return true;
         }
         return false;
+    }
+
+    public int length() {
+        return this.value.length();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ManagementNumber that = (ManagementNumber) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

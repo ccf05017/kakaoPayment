@@ -4,12 +4,20 @@ import java.math.BigDecimal;
 
 public class Payment {
     private Long id;
+    private ManagementNumber managementNumber;
     private PayInfo payInfo;
     private EncryptedCardInfo encryptedCardInfo;
     private Tax tax;
 
-    private Payment(Long id, PayInfo payInfo, EncryptedCardInfo encryptedCardInfo, Tax tax) {
+    private Payment(
+            Long id,
+            ManagementNumber managementNumber,
+            PayInfo payInfo,
+            EncryptedCardInfo encryptedCardInfo,
+            Tax tax
+    ) {
         this.id = id;
+        this.managementNumber = managementNumber;
         this.payInfo = payInfo;
         this.encryptedCardInfo = encryptedCardInfo;
         this.tax = tax;
@@ -26,6 +34,7 @@ public class Payment {
     ) throws Exception {
         this(
                 null,
+                ManagementNumber.create(),
                 PayInfo.create(installmentMonths, payAmount, payStatus),
                 EncryptedCardInfo.create(CardInfo.create(cardNumber, duration, cvc), key),
                 Tax.autoCreate(payAmount)
@@ -44,6 +53,7 @@ public class Payment {
     ) throws Exception {
         this(
                 null,
+                ManagementNumber.create(),
                 PayInfo.create(installmentMonths, payAmount, payStatus),
                 EncryptedCardInfo.create(CardInfo.create(cardNumber, duration, cvc), key),
                 Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount)

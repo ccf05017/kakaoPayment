@@ -11,7 +11,7 @@ class ManagementNumberTests {
     @DisplayName("관리번호는 20자리의 랜덤한 유일값으로 생성되야 한다.")
     @Test
     void createManagementNumber() {
-        String managementNumber = ManagementNumber.create();
+        ManagementNumber managementNumber = ManagementNumber.create();
         assertThat(managementNumber.length()).isEqualTo(20);
     }
 
