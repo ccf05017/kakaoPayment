@@ -12,12 +12,15 @@ public class PaymentFactory {
             Integer cvc,
             String key
     ) throws Exception {
+        CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
+
         return new Payment(
                 null,
                 ManagementNumber.create(),
                 null,
                 PayInfo.create(installmentMonths, payAmount, payStatus),
-                EncryptedCardInfo.create(CardInfo.create(cardNumber, duration, cvc), key),
+                cardInfo,
+                EncryptedCardInfo.create(cardInfo, key),
                 Tax.autoCreate(payAmount)
         );
     }
@@ -32,12 +35,15 @@ public class PaymentFactory {
             String key,
             Long taxAmount
     ) throws Exception {
+        CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
+
         return new Payment(
                 null,
                 ManagementNumber.create(),
                 null,
                 PayInfo.create(installmentMonths, payAmount, payStatus),
-                EncryptedCardInfo.create(CardInfo.create(cardNumber, duration, cvc), key),
+                cardInfo,
+                EncryptedCardInfo.create(cardInfo, key),
                 Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount)
         );
     }
@@ -48,6 +54,7 @@ public class PaymentFactory {
                 ManagementNumber.create(),
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                payment.getCardInfo(),
                 payment.getEncryptedCardInfo(),
                 payment.getTax()
         );
@@ -59,6 +66,7 @@ public class PaymentFactory {
                 ManagementNumber.create(),
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                payment.getCardInfo(),
                 payment.getEncryptedCardInfo(),
                 Tax.createManualCancelAllTax(payment.getTax(), taxValue)
         );

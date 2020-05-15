@@ -7,6 +7,7 @@ public class Payment {
     private ManagementNumber managementNumber;
     private ManagementNumber relatedManagementNumber;
     private PayInfo payInfo;
+    private CardInfo cardInfo;
     private EncryptedCardInfo encryptedCardInfo;
     private Tax tax;
 
@@ -15,6 +16,7 @@ public class Payment {
             ManagementNumber managementNumber,
             ManagementNumber relatedManagementNumber,
             PayInfo payInfo,
+            CardInfo cardInfo,
             EncryptedCardInfo encryptedCardInfo,
             Tax tax
     ) {
@@ -22,6 +24,7 @@ public class Payment {
         this.managementNumber = managementNumber;
         this.relatedManagementNumber = relatedManagementNumber;
         this.payInfo = payInfo;
+        this.cardInfo = cardInfo;
         this.encryptedCardInfo = encryptedCardInfo;
         this.tax = tax;
     }
@@ -48,5 +51,9 @@ public class Payment {
 
     public ManagementNumber getRelatedManagementNumber() {
         return this.relatedManagementNumber;
+    }
+
+    public CardInfo getCardInfo() {
+        return this.cardInfo;
     }
 }
