@@ -23,7 +23,7 @@ public class Payment {
         this.tax = tax;
     }
 
-    public Payment(
+    public static Payment createPaymentAutoTax(
             int installmentMonths,
             BigDecimal payAmount,
             PayStatus payStatus,
@@ -32,7 +32,7 @@ public class Payment {
             Integer cvc,
             String key
     ) throws Exception {
-        this(
+        return new Payment (
                 null,
                 ManagementNumber.create(),
                 PayInfo.create(installmentMonths, payAmount, payStatus),
@@ -41,7 +41,7 @@ public class Payment {
         );
     }
 
-    public Payment(
+    public static Payment createPaymentManualTax(
             int installmentMonths,
             BigDecimal payAmount,
             PayStatus payStatus,
@@ -51,7 +51,7 @@ public class Payment {
             String key,
             Long taxAmount
     ) throws Exception {
-        this(
+        return new Payment (
                 null,
                 ManagementNumber.create(),
                 PayInfo.create(installmentMonths, payAmount, payStatus),

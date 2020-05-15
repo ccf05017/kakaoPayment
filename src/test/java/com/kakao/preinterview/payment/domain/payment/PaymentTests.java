@@ -30,10 +30,10 @@ class PaymentTests {
         taxAmount = 150L;
     }
 
-    @DisplayName("할부개월수, 결제금액, 결제타입, 암호화 된 카드정보를 입력받아서 객체를 만들 수 있다. (부가가치세 자동 계산)")
+    @DisplayName("세금 자동계산 결제 객체 생성")
     @Test
     void createPaymentByAutoTax() throws Exception {
-        Payment payment = new Payment(
+        Payment payment = Payment.createPaymentAutoTax(
                 installmentMonths,
                 payAmount,
                 payStatus,
@@ -46,10 +46,10 @@ class PaymentTests {
         assertThat(payment.getTax()).isEqualTo(Tax.autoCreate(payAmount));
     }
 
-    @DisplayName("할부개월수, 결제금액, 결제타입, 암호화 된 카드정보, 부가가치세를 입력받아서 객체를 만들 수 있다. (부가가치세 수동 계산)")
+    @DisplayName("세금 수동계산 결제 객체 생성")
     @Test
     void createPaymentByManualTax() throws Exception {
-        Payment payment = new Payment(
+        Payment payment = Payment.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
                 payStatus,
