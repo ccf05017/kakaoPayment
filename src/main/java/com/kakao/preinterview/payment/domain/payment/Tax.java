@@ -32,6 +32,11 @@ public class Tax {
         if (BigDecimal.ZERO.compareTo(payAmount) >= 0) throw new IllegalArgumentException();
     }
 
+    public static Tax createManualCancelTax(Tax originalTax, BigDecimal requestTaxValue) {
+        // TODO: Validation Check 필요
+        return new Tax(requestTaxValue);
+    }
+
     public BigDecimal getValue() {
         return value;
     }

@@ -76,6 +76,17 @@ public class Payment {
         );
     }
 
+    public static Payment createPaymentCancelAllByManualTax(Payment payment, BigDecimal taxValue) {
+        return new Payment(
+                null,
+                ManagementNumber.create(),
+                payment.getManagementNumber(),
+                PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                payment.getEncryptedCardInfo(),
+                Tax.createManualCancelTax(payment.getTax(), taxValue)
+        );
+    }
+
     public Tax getTax() {
         return tax;
     }
