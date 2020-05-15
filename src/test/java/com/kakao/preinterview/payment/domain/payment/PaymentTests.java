@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PaymentTests {
     private Integer installmentMonths;
     private BigDecimal payAmount;
-    private PayStatus payStatus;
     private Long cardNumber;
     private Integer duration;
     private Integer cvc;
@@ -22,7 +21,6 @@ class PaymentTests {
     public void setup() {
         installmentMonths = 12;
         payAmount = BigDecimal.valueOf(1000);
-        payStatus = PayStatus.PAY;
         cardNumber = 1111222233334444L;
         duration = 1231;
         cvc = 123;
@@ -36,7 +34,7 @@ class PaymentTests {
         Payment payment = Payment.createPaymentAutoTax(
                 installmentMonths,
                 payAmount,
-                payStatus,
+                PayStatus.PAY,
                 cardNumber,
                 duration,
                 cvc,
@@ -52,7 +50,7 @@ class PaymentTests {
         Payment payment = Payment.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
-                payStatus,
+                PayStatus.PAY,
                 cardNumber,
                 duration,
                 cvc,
@@ -61,5 +59,24 @@ class PaymentTests {
         );
         assertThat(payment).isNotNull();
         assertThat(payment.getTax()).isEqualTo(Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount));
+    }
+
+    @DisplayName("세금 자동계산 전액 결제취소 객체 생성")
+    @Test
+    void createPaymentCancelAllByAutoTax() throws Exception {
+        Payment payment = Payment.createPaymentManualTax(
+                installmentMonths,
+                payAmount,
+                PayStatus.PAY,
+                cardNumber,
+                duration,
+                cvc,
+                key,
+                taxAmount
+        );
+        Payment canceledPayment = Payment.createPaymentCancelAllByAutoTax(payment);
+
+        assertThat(canceledPayment.getRelatedManagementNumber()).isEqualTo(payment.getManagementNumber());
+        assertThat(canceledPayment.getTax()).isEqualTo(payment.getTax());
     }
 }
