@@ -32,6 +32,10 @@ public class Tax {
         if (BigDecimal.ZERO.compareTo(payAmount) >= 0) throw new IllegalArgumentException();
     }
 
+    public BigDecimal getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
