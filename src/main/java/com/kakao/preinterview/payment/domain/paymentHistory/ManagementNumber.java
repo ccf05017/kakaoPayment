@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.paymentHistory;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.UUID;
 public class ManagementNumber {
     private String value;
 
-    private ManagementNumber(String value) {
+    protected ManagementNumber(String value) {
         this.value = value;
     }
 

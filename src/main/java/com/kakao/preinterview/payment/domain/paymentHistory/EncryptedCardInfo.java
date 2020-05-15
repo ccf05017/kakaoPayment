@@ -1,9 +1,9 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.paymentHistory;
 
 public class EncryptedCardInfo {
     private String encryptedValue;
 
-    public EncryptedCardInfo(String encryptedValue) {
+    protected EncryptedCardInfo(String encryptedValue) {
         this.encryptedValue = encryptedValue;
     }
 
@@ -13,5 +13,9 @@ public class EncryptedCardInfo {
 
     public String getEncryptedValue() {
         return encryptedValue;
+    }
+
+    public Long getCardNumber(String key) throws Exception {
+        return CardInfo.decrypt(this.encryptedValue, key).getCardNumber();
     }
 }
