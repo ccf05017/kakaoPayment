@@ -1,6 +1,7 @@
 package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
+import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 
 public class PaymentHistory {
@@ -56,5 +57,10 @@ public class PaymentHistory {
 
     public boolean isCanceled() {
         return canceled;
+    }
+
+    public void toCanceled() {
+        if (this.canceled) throw new DuplicatedCancelException();
+        this.canceled = true;
     }
 }
