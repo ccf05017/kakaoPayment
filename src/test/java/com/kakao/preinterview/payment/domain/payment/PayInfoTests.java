@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayAmountException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,12 +23,12 @@ class PayInfoTests {
         assertThat(PayInfo.create(installmentMonths, payAmount, payStatus)).isNotNull();
     }
 
-    @DisplayName("올바르지 못한 인자로 객체를 생성할 수 없다.")
+    @DisplayName("범위를 벗어난 결제 금액으로 객체를 생성할 수 없다.")
     @ParameterizedTest
     @MethodSource("invalidParams")
     void validationTest(BigDecimal invalidPayAmount) {
         assertThatThrownBy(() -> PayInfo.create(installmentMonths, invalidPayAmount, payStatus))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPayAmountException.class);
     }
     public static Stream<BigDecimal> invalidParams() {
         return Stream.of(

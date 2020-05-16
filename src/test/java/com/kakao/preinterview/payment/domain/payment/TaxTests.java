@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,7 +58,7 @@ class TaxTests {
     @NullSource
     @MethodSource("invalidPayAmount")
     void autoCreateFailByInvalidPayAmount(BigDecimal invalidPayAmount) {
-        assertThatThrownBy(() -> Tax.autoCreate(invalidPayAmount)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Tax.autoCreate(invalidPayAmount)).isInstanceOf(InvalidTaxAmountException.class);
     }
     public static Stream<BigDecimal> invalidPayAmount() {
         return Stream.of(
@@ -72,7 +73,7 @@ class TaxTests {
     void createManualCancelAllTaxFailWithInvalidValueTest(BigDecimal greaterThanOriginalTaxValue) {
         Tax originalValue = Tax.autoCreate(BigDecimal.valueOf(1));
         assertThatThrownBy(() -> Tax.createManualCancelAllTax(originalValue, greaterThanOriginalTaxValue))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidTaxAmountException.class);
     }
     public static Stream<BigDecimal> greaterThanOriginalTaxValue() {
         return Stream.of(
