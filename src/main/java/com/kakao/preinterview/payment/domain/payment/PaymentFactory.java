@@ -48,7 +48,6 @@ public class PaymentFactory {
 
     public static Payment createPaymentCancelAllByAutoTax(PaymentHistory paymentHistory, String key) throws Exception {
         validateCanceled(paymentHistory);
-        String decryptedRawCardInfo = EncryptedCardInfo.decryptFromRawData(paymentHistory.getEncryptedCardInfo(), key);
 
         return new Payment(
                 ManagementNumber.create(),
@@ -58,24 +57,44 @@ public class PaymentFactory {
                         paymentHistory.getPayAmount(),
                         PayStatus.PAY_CANCEL
                 ),
-                CardInfo.createFromDecryptedRawString(decryptedRawCardInfo),
+                CardInfo.createFromDecryptedRawString(
+                        getDecryptedRawCardInfoFromPaymentHistory(paymentHistory, key)
+                ),
                 Tax.createFromPaymentHistory(paymentHistory)
         );
+    }
+
+    public static Payment createPaymentCancelAllByManualTax(
+            PaymentHistory paymentHistory,
+            String key,
+            BigDecimal taxValue
+    ) throws Exception {
+        validateCanceled(paymentHistory);
+
+        return new Payment(
+                ManagementNumber.create(),
+                ManagementNumber.createFromPaymentHistory(paymentHistory),
+                PayInfo.create(
+                        InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonthFormatMonth()),
+                        paymentHistory.getPayAmount(),
+                        PayStatus.PAY_CANCEL
+                ),
+                CardInfo.createFromDecryptedRawString(
+                        getDecryptedRawCardInfoFromPaymentHistory(paymentHistory, key)
+                ),
+                Tax.createManualCancelAllTax(Tax.createFromPaymentHistory(paymentHistory), taxValue)
+        );
+    }
+
+    private static String getDecryptedRawCardInfoFromPaymentHistory(
+            PaymentHistory paymentHistory, String key
+    ) throws Exception {
+        return EncryptedCardInfo.decryptFromRawData(paymentHistory.getEncryptedCardInfo(), key);
     }
 
     private static void validateCanceled(PaymentHistory paymentHistory) {
         if (paymentHistory.isCanceled()) throw new TryCancelFromCanceledPaymentException();
         if (PayStatus.PAY_CANCEL.getName().equals(paymentHistory.getPaymentStatusName()))
             throw new TryCancelFromCanceledPaymentException();
-    }
-
-    public static Payment createPaymentCancelAllByManualTax(Payment payment, BigDecimal taxValue) {
-        return new Payment(
-                ManagementNumber.create(),
-                payment.getManagementNumber(),
-                PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
-                payment.getCardInfo(),
-                Tax.createManualCancelAllTax(payment.getTax(), taxValue)
-        );
     }
 }
