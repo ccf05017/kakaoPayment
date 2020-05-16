@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PaymentTests {
     private ManagementNumber managementNumber = new ManagementNumber("XXXXXXXXXXXXXXXXXXXX");
-    private Integer installmentMonths = 0;
+    private InstallmentMonth installmentMonths = InstallmentMonth.LUMPSUM;
     private BigDecimal payAmount = BigDecimal.valueOf(110000);
     private PayStatus payStatus = PayStatus.PAY;
     private PayInfo payInfo = PayInfo.create(installmentMonths, payAmount, payStatus);

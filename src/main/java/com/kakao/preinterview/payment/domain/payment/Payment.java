@@ -39,8 +39,8 @@ public class Payment {
         return this.managementNumber;
     }
 
-    public int getInstallmentMonths() {
-        return this.payInfo.getInstallmentMonths();
+    public InstallmentMonth getInstallmentMonth() {
+        return this.payInfo.getInstallmentMonth();
     }
 
     public BigDecimal getPayAmount() {

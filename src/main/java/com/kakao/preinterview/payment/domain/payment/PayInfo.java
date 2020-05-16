@@ -4,31 +4,23 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class PayInfo {
-    private final int MIN_INSTALLMENT_MONTHS = 0;
-    private final int MAX_INSTALLMENT_MONTHS = 12;
     private final BigDecimal MIN_PAY_AMOUNT = BigDecimal.valueOf(100);
     private final BigDecimal MAX_PAY_AMOUNT = BigDecimal.valueOf(1000000000);
 
-    private Integer installmentMonths;
+    private InstallmentMonth installmentMonth;
     private BigDecimal payAmount;
     private PayStatus payStatus;
 
-    private PayInfo(int installmentMonths, BigDecimal payAmount, PayStatus payStatus) {
-        validation(installmentMonths, payAmount, payStatus);
+    private PayInfo(InstallmentMonth installmentMonth, BigDecimal payAmount, PayStatus payStatus) {
+        validation(payAmount);
 
-        this.installmentMonths = installmentMonths;
+        this.installmentMonth = installmentMonth;
         this.payAmount = payAmount;
         this.payStatus = payStatus;
     }
 
-    private void validation(int installmentMonths, BigDecimal payAmount, PayStatus payStatus) {
-        installmentMonthsValidation(installmentMonths);
+    private void validation(BigDecimal payAmount) {
         payAmountValidation(payAmount);
-    }
-
-    private void installmentMonthsValidation(int installmentMonths) {
-        if (installmentMonths < MIN_INSTALLMENT_MONTHS || installmentMonths > MAX_INSTALLMENT_MONTHS)
-            throw new IllegalArgumentException("Invalid InstallmentMonths");
     }
 
     private void payAmountValidation(BigDecimal payAmount) {
@@ -36,12 +28,12 @@ public class PayInfo {
             throw new IllegalArgumentException("Invalid PayAmount");
     }
 
-    public static PayInfo create(int installmentMonths, BigDecimal payAmount, PayStatus payStatus) {
+    public static PayInfo create(InstallmentMonth installmentMonths, BigDecimal payAmount, PayStatus payStatus) {
         return new PayInfo(installmentMonths, payAmount, payStatus);
     }
 
-    public Integer getInstallmentMonths() {
-        return installmentMonths;
+    public InstallmentMonth getInstallmentMonth() {
+        return installmentMonth;
     }
 
     public BigDecimal getPayAmount() {
@@ -57,13 +49,13 @@ public class PayInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PayInfo payInfo = (PayInfo) o;
-        return Objects.equals(installmentMonths, payInfo.installmentMonths) &&
+        return Objects.equals(installmentMonth, payInfo.installmentMonth) &&
                 Objects.equals(payAmount, payInfo.payAmount) &&
                 payStatus == payInfo.payStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(installmentMonths, payAmount, payStatus);
+        return Objects.hash(installmentMonth, payAmount, payStatus);
     }
 }

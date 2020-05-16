@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PaymentFactoryTests {
-    private Integer installmentMonths;
+    private InstallmentMonth installmentMonths;
     private BigDecimal payAmount;
     private Long cardNumber;
     private Integer duration;
@@ -20,7 +20,7 @@ class PaymentFactoryTests {
 
     @BeforeEach
     public void setup() {
-        installmentMonths = 12;
+        installmentMonths = InstallmentMonth.TWELVE;
         payAmount = BigDecimal.valueOf(1000);
         cardNumber = 1111222233334444L;
         duration = 1231;

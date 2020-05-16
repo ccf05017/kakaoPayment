@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class PaymentFactory {
     public static Payment createPaymentAutoTax(
-            int installmentMonths,
+            InstallmentMonth installmentMonths,
             BigDecimal payAmount,
             PayStatus payStatus,
             Long cardNumber,
@@ -26,7 +26,7 @@ public class PaymentFactory {
     }
 
     public static Payment createPaymentManualTax(
-            int installmentMonths,
+            InstallmentMonth installmentMonths,
             BigDecimal payAmount,
             PayStatus payStatus,
             Long cardNumber,
@@ -53,7 +53,7 @@ public class PaymentFactory {
                 null,
                 ManagementNumber.create(),
                 payment.getManagementNumber(),
-                PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
                 payment.getCardInfo(),
                 payment.getEncryptedCardInfo(),
                 payment.getTax()
@@ -65,7 +65,7 @@ public class PaymentFactory {
                 null,
                 ManagementNumber.create(),
                 payment.getManagementNumber(),
-                PayInfo.create(payment.getInstallmentMonths(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
+                PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
                 payment.getCardInfo(),
                 payment.getEncryptedCardInfo(),
                 Tax.createManualCancelAllTax(payment.getTax(), taxValue)
