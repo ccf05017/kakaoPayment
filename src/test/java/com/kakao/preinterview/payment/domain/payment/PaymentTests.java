@@ -15,7 +15,7 @@ class PaymentTests {
     private PayStatus payStatus = PayStatus.PAY;
     private PayInfo payInfo = PayInfo.create(installmentMonths, payAmount, payStatus);
     private Long cardNumber = 1234567890123456L;
-    private Integer duration = 1125;
+    private String duration = "1125";
     private Integer cvc = 777;
     private CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
     private Tax tax = Tax.manualCreate(BigDecimal.valueOf(10000), payAmount);
@@ -45,6 +45,12 @@ class PaymentTests {
     @DisplayName("카드사 전송용 할부개월 수 확인")
     @Test
     void installmentMonthsForCardCompanyTest() {
-        // TODO: enum 타입으로 만들어서 처리하자
+        assertThat(fakePayment.getInstallmentMonthForCardCompany()).isEqualTo("00");
+    }
+
+    @DisplayName("카드사 전송용 카드유효기간 확인")
+    @Test
+    void durationForCardCompanyTest() {
+        assertThat(fakePayment.getDurationForCardCompany()).isEqualTo("1125");
     }
 }

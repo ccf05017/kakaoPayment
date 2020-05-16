@@ -59,7 +59,23 @@ public class Payment {
         return this.cardInfo;
     }
 
+    public Long getCardNumber() {
+        return this.cardInfo.getCardNumber();
+    }
+
+    public String getDuration() {
+        return this.cardInfo.getDuration();
+    }
+
     public String getCardNumberForCardCompany() {
-        return ParserType.NUMBER_LEFT.parse(20, this.cardInfo.getCardNumber().toString());
+        return ParserType.NUMBER_LEFT.parse(20, this.getCardNumber().toString());
+    }
+
+    public String getInstallmentMonthForCardCompany() {
+        return ParserType.NUMBER_DEFAULT.parse(2, this.getInstallmentMonth().getFormatMonth());
+    }
+
+    public String getDurationForCardCompany() {
+        return ParserType.NUMBER_LEFT.parse(4, this.getDuration());
     }
 }

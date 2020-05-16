@@ -8,7 +8,7 @@ public class PaymentFactory {
             BigDecimal payAmount,
             PayStatus payStatus,
             Long cardNumber,
-            Integer duration,
+            String duration,
             Integer cvc,
             String key
     ) throws Exception {
@@ -30,7 +30,7 @@ public class PaymentFactory {
             BigDecimal payAmount,
             PayStatus payStatus,
             Long cardNumber,
-            Integer duration,
+            String duration,
             Integer cvc,
             String key,
             Long taxAmount

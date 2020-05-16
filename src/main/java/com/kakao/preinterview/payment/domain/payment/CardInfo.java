@@ -12,10 +12,10 @@ public class CardInfo {
     private static final int CVC_LENGTH = 3;
 
     private Long cardNumber;
-    private Integer duration;
+    private String duration;
     private Integer cvc;
 
-    private CardInfo(long cardNumber, int duration, int cvc) {
+    private CardInfo(long cardNumber, String duration, int cvc) {
         validation(cardNumber, duration, cvc);
 
         this.cardNumber = cardNumber;
@@ -23,7 +23,7 @@ public class CardInfo {
         this.cvc = cvc;
     }
 
-    private void validation(long cardNumber, int duration, int cvc) {
+    private void validation(long cardNumber, String duration, int cvc) {
         this.cardNumberValidation(cardNumber);
         this.durationValidation(duration);
         this.cvcValidation(cvc);
@@ -35,9 +35,8 @@ public class CardInfo {
             throw new IllegalArgumentException("Invalid CardNumber");
     }
 
-    private void durationValidation(int duration) {
-        int durationSize = (int)(Math.log10(duration) + 1);
-        if (durationSize != DURATION_LENGTH) throw new IllegalArgumentException("Invalid Duration");
+    private void durationValidation(String duration) {
+        if (duration.length() != DURATION_LENGTH) throw new IllegalArgumentException("Invalid Duration");
     }
 
     private void cvcValidation(int cvc) {
@@ -45,7 +44,7 @@ public class CardInfo {
         if (cvcSize != CVC_LENGTH) throw new IllegalArgumentException("Invalid Cvc");
     }
 
-    public static CardInfo create(long cardNumber, int duration, int cvc) {
+    public static CardInfo create(long cardNumber, String duration, int cvc) {
         return new CardInfo(cardNumber, duration, cvc);
     }
 
@@ -65,7 +64,7 @@ public class CardInfo {
         StringTokenizer stringTokenizer = new StringTokenizer(decryptString, "|");
 
         Long cardNumber = Long.parseLong(stringTokenizer.nextToken());
-        Integer duration = Integer.parseInt(stringTokenizer.nextToken());
+        String duration = stringTokenizer.nextToken();
         Integer cvc = Integer.parseInt(stringTokenizer.nextToken());
 
         return new CardInfo(cardNumber, duration, cvc);
@@ -75,7 +74,7 @@ public class CardInfo {
         return cardNumber;
     }
 
-    public Integer getDuration() {
+    public String getDuration() {
         return duration;
     }
 

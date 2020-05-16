@@ -13,7 +13,7 @@ class PaymentFactoryTests {
     private InstallmentMonth installmentMonths;
     private BigDecimal payAmount;
     private Long cardNumber;
-    private Integer duration;
+    private String duration;
     private Integer cvc;
     private String key;
     private Long taxAmount;
@@ -23,7 +23,7 @@ class PaymentFactoryTests {
         installmentMonths = InstallmentMonth.TWELVE;
         payAmount = BigDecimal.valueOf(1000);
         cardNumber = 1111222233334444L;
-        duration = 1231;
+        duration = "1231";
         cvc = 123;
         key = "testKey";
         taxAmount = 150L;

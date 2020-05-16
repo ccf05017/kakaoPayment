@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CardInfoTests {
     private Long validCardNumber = 12345678901L;
-    private Integer validDuration = 1224;
+    private String validDuration = "0124";
     private Integer validCvc = 123;
 
     @DisplayName("카드번호, 유효기간, cvc를 입력 받아서 객체를 생성할 수 있다.")
@@ -27,21 +27,21 @@ class CardInfoTests {
     @DisplayName("카드번호, 유효기간, cvc 중 하나라도 잘못되면 객체를 생성할 수 없다.")
     @ParameterizedTest
     @MethodSource("invalidParams")
-    void createValidationTest(Long cardNumber, Integer duration, Integer cvc) {
+    void createValidationTest(Long cardNumber, String duration, Integer cvc) {
         assertThatThrownBy(()-> CardInfo.create(cardNumber, duration, cvc))
                 .isInstanceOf(IllegalArgumentException.class);
     }
     public static Stream<Arguments> invalidParams() {
         return Stream.of(
                 // invalid cardNumber
-                Arguments.of(123L, 1224, 123),
-                Arguments.of(123456789123456789L, 1224, 123),
+                Arguments.of(123L, "1224", 123),
+                Arguments.of(123456789123456789L, "1224", 123),
                 // invalid duration
-                Arguments.of(12345678901L, 12345, 123),
-                Arguments.of(12345678901L, 12, 123),
+                Arguments.of(12345678901L, "12345", 123),
+                Arguments.of(12345678901L, "12", 123),
                 // invalid cvc
-                Arguments.of(12345678901L, 1224, 12),
-                Arguments.of(12345678901L, 1224, 1234)
+                Arguments.of(12345678901L, "1224", 12),
+                Arguments.of(12345678901L, "1224", 1234)
         );
     }
 
