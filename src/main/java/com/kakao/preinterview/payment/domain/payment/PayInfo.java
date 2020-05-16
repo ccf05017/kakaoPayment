@@ -1,5 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayAmountException;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -25,7 +27,7 @@ public class PayInfo {
 
     private void payAmountValidation(BigDecimal payAmount) {
         if (MIN_PAY_AMOUNT.compareTo(payAmount) > 0 || MAX_PAY_AMOUNT.compareTo(payAmount) < 0)
-            throw new IllegalArgumentException("Invalid PayAmount");
+            throw new InvalidPayAmountException();
     }
 
     public static PayInfo create(InstallmentMonth installmentMonths, BigDecimal payAmount, PayStatus payStatus) {

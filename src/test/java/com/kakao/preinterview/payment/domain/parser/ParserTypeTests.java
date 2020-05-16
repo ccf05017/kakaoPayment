@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.domain.parser;
 
+import com.kakao.preinterview.payment.domain.parser.exceptions.NotExistParserTypeNameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,6 +65,6 @@ class ParserTypeTests {
     @DisplayName("typeName에 정의되지 않은 내용 입력 시 IllegalArgumentException")
     @Test
     void parseTypeGenerateFailWithNotRegisteredTypeName() {
-        assertThatThrownBy(() -> ParserType.create("hello")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> ParserType.create("hello")).isInstanceOf(NotExistParserTypeNameException.class);
     }
 }

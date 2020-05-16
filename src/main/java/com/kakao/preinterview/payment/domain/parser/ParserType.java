@@ -1,5 +1,7 @@
 package com.kakao.preinterview.payment.domain.parser;
 
+import com.kakao.preinterview.payment.domain.parser.exceptions.NotExistParserTypeNameException;
+
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -29,7 +31,7 @@ public enum ParserType {
         Optional<ParserType> filteredType = Arrays.asList(ParserType.values()).stream()
                 .filter(parserType -> typeName.equals(parserType.getTypeName()))
                 .findFirst();
-        return filteredType.orElseThrow(IllegalArgumentException::new);
+        return filteredType.orElseThrow(NotExistParserTypeNameException::new);
     }
 
     public String parse(int limit, String value) {

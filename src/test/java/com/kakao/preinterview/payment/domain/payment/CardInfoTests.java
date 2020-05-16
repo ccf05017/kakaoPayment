@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidCardInfoParamException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,7 +29,7 @@ class CardInfoTests {
     @MethodSource("invalidParams")
     void createValidationTest(Long cardNumber, String duration, Integer cvc) {
         assertThatThrownBy(()-> CardInfo.create(cardNumber, duration, cvc))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidCardInfoParamException.class);
     }
     public static Stream<Arguments> invalidParams() {
         return Stream.of(

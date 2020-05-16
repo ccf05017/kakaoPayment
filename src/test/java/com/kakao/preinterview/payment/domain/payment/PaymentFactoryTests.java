@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.domain.payment;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -150,6 +151,6 @@ class PaymentFactoryTests {
 
         assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
                 paymentHistory, "testKey", requestTaxValue
-        )).isInstanceOf(IllegalArgumentException.class);
+        )).isInstanceOf(InvalidTaxAmountException.class);
     }
 }
