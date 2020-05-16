@@ -1,7 +1,10 @@
 package com.kakao.preinterview.payment.domain.parser;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum ParserType {
-    NUMBER_DEFAULT("nb", (limit, value) -> {
+    NUMBER_DEFAULT("nd", (limit, value) -> {
         return emptySpaceGenerate(" ", limit, value) + value;
     }),
     NUMBER_RIGHT("nr", (limit, value) -> {
@@ -12,9 +15,7 @@ public enum ParserType {
     }),
     STRING_LEFT("sl", (limit, value) -> {
         return value + emptySpaceGenerate(" ", limit, value);
-    }),
-    ;
-
+    });
 
     private String typeName;
     private Parser parser;
@@ -22,6 +23,13 @@ public enum ParserType {
     ParserType(String typeName, Parser parser) {
         this.typeName = typeName;
         this.parser = parser;
+    }
+
+    public static ParserType create(String typeName) {
+        Optional<ParserType> filteredType = Arrays.asList(ParserType.values()).stream()
+                .filter(parserType -> typeName.equals(parserType.getTypeName()))
+                .findFirst();
+        return filteredType.orElseThrow(IllegalArgumentException::new);
     }
 
     public String parse(int limit, String value) {
@@ -34,5 +42,13 @@ public enum ParserType {
             result.append(marker);
         }
         return result.toString();
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public Parser getParser() {
+        return parser;
     }
 }

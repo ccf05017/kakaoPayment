@@ -1,10 +1,16 @@
 package com.kakao.preinterview.payment.domain.parser;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ParserTypeTests {
     @DisplayName("숫자 기본정렬 수행(우측 정렬 빈 자리 공백) 확인")
@@ -37,5 +43,27 @@ class ParserTypeTests {
     void StringLeftTest(int limit, String value, String result) {
         String parsed = ParserType.STRING_LEFT.parse(limit, value);
         assertThat(parsed).isEqualTo(result);
+    }
+
+    @DisplayName("typeName 입력 시 알맞는 ParserType 객체 반환")
+    @ParameterizedTest
+    @MethodSource("typeGenerator")
+    void parseTypeGenerateTest(String typeName, ParserType result) {
+        ParserType parserType = ParserType.create(typeName);
+        assertThat(parserType).isEqualTo(result);
+    }
+    public static Stream<Arguments> typeGenerator() {
+        return Stream.of(
+                Arguments.of("nd", ParserType.NUMBER_DEFAULT),
+                Arguments.of("nr", ParserType.NUMBER_RIGHT),
+                Arguments.of("nl", ParserType.NUMBER_LEFT),
+                Arguments.of("sl", ParserType.STRING_LEFT)
+        );
+    }
+
+    @DisplayName("typeName에 정의되지 않은 내용 입력 시 IllegalArgumentException")
+    @Test
+    void parseTypeGenerateFailWithNotRegisteredTypeName() {
+        assertThatThrownBy(() -> ParserType.create("hello")).isInstanceOf(IllegalArgumentException.class);
     }
 }
