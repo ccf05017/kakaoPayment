@@ -3,10 +3,20 @@ package com.kakao.preinterview.payment.domain.history;
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
 import com.kakao.preinterview.payment.domain.payment.Payment;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PaymentHistory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String managementNumber;
     private String relatedManagementNumber;
@@ -51,6 +61,10 @@ public class PaymentHistory {
                 payment.getPayStatusName(),
                 !payment.getPayStatusCardCompanyName().equals("PAYMENT")
         );
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getManagementNumber() {
