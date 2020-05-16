@@ -5,4 +5,9 @@ public class FakeEncryptedValue implements EncryptedValue {
     public String getEncryptedValue() {
         return "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY";
     }
+
+    @Override
+    public String decrypt(String key){
+        return "hello";
+    }
 }

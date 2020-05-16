@@ -10,14 +10,15 @@ public class EncryptedCardInfo implements EncryptedValue {
     }
 
     public static EncryptedCardInfo create(CardInfo cardInfo, String key) throws Exception {
-        return new EncryptedCardInfo(cardInfo.encrypt(key));
+        String encryptedValue = EncryptDecrypt.encryptAES256(cardInfo.toEncryptRawData(), key);
+        return new EncryptedCardInfo(encryptedValue);
+    }
+
+    public String decrypt(String key) throws Exception {
+        return EncryptDecrypt.decryptAES256(this.encryptedValue, key);
     }
 
     public String getEncryptedValue() {
         return encryptedValue;
-    }
-
-    public Long getCardNumber(String key) throws Exception {
-        return CardInfo.decrypt(this.encryptedValue, key).getCardNumber();
     }
 }
