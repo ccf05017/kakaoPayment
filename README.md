@@ -52,7 +52,10 @@
         - 암호화 자체가 큰 역할을 지닌 책임이기 때문에 분리
         - 암호화 데이터는 실제 DB에 저장되는 CardCompanyData, PaymentHistory에서만 필요하다.
     - [X] 카드사 전달용 데이터를 별도 Aggregate로 빼낸다.
-        - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님. 
+        - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님.
+    - [ ] 결제전액취소는 PaymentHistory 객체로부터 정보를 받을 수 있도록 변경해야 한다.
+        - [ ] PaymentFactory 변경
+        - [ ] 결제 취소 관련 도메인 로직에 어긋나지 않는지 확인
                 
 - [X] CardCompanyData
     - [X] id, 카드사용 정보를 갖는다.
