@@ -11,10 +11,10 @@ public class PaymentHistory {
     private String managementNumber;
     private String relatedManagementNumber;
     private String encryptedCardInfo;
-    private String installmentMonth;
+    private String installmentMonthFormatMonth;
     private BigDecimal payAmount;
     private BigDecimal tax;
-    private String paymentStatus;
+    private String paymentStatusName;
     private boolean canceled;
 
     protected PaymentHistory(
@@ -22,20 +22,20 @@ public class PaymentHistory {
             String managementNumber,
             String relatedManagementNumber,
             String encryptedCardInfo,
-            String installmentMonth,
+            String installmentMonthFormatMonth,
             BigDecimal payAmount,
             BigDecimal tax,
-            String paymentStatus,
+            String paymentStatusName,
             boolean canceled
     ) {
         this.id = id;
         this.managementNumber = managementNumber;
         this.relatedManagementNumber = relatedManagementNumber;
         this.encryptedCardInfo = encryptedCardInfo;
-        this.installmentMonth = installmentMonth;
+        this.installmentMonthFormatMonth = installmentMonthFormatMonth;
         this.payAmount = payAmount;
         this.tax = tax;
-        this.paymentStatus = paymentStatus;
+        this.paymentStatusName = paymentStatusName;
         this.canceled = canceled;
     }
 
@@ -65,8 +65,8 @@ public class PaymentHistory {
         return encryptedCardInfo;
     }
 
-    public String getInstallmentMonth() {
-        return installmentMonth;
+    public String getInstallmentMonthFormatMonth() {
+        return installmentMonthFormatMonth;
     }
 
     public BigDecimal getPayAmount() {
@@ -77,8 +77,8 @@ public class PaymentHistory {
         return this.tax;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
+    public String getPaymentStatusName() {
+        return paymentStatusName;
     }
 
     public boolean isCanceled() {

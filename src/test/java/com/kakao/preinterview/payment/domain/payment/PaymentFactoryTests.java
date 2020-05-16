@@ -88,8 +88,13 @@ class PaymentFactoryTests {
 
     @DisplayName("결제전액취소 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
     @Test
-    void createPaymentCancelAllByAutoTaxFromPaymentCancelHistory() {
+    void createPaymentCancelAllByAutoTaxFromPaymentCancelHistory() throws Exception {
+        Payment canceledPayment = FakePaymentInfoFactory.createFakeCancelPayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(canceledPayment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(canceledPayment, encryptedCardInfo);
 
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey"))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 낮은 금액으로 요청 시 성공")

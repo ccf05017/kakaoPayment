@@ -36,9 +36,9 @@ class PaymentHistoryTests {
         assertThat(paymentHistory.getManagementNumber()).isEqualTo(payment.getManagementNumberValue());
         assertThat(paymentHistory.getRelatedManagementNumber()).isEqualTo(payment.getRelatedManagementNumberValue());
         assertThat(paymentHistory.getEncryptedCardInfo()).isEqualTo(fakeEncryptedCardInfo.getEncryptedValue());
-        assertThat(paymentHistory.getInstallmentMonth()).isEqualTo(payment.getInstallmentMonthFormatMonth());
+        assertThat(paymentHistory.getInstallmentMonthFormatMonth()).isEqualTo(payment.getInstallmentMonthFormatMonth());
         assertThat(paymentHistory.getPayAmount()).isEqualTo(payment.getPayAmountString());
-        assertThat(paymentHistory.getPaymentStatus()).isEqualTo(payStatus);
+        assertThat(paymentHistory.getPaymentStatusName()).isEqualTo(payStatus);
         assertThat(paymentHistory.isCanceled()).isEqualTo(isCanceled);
     }
     public static Stream<Arguments> paymentStream() {

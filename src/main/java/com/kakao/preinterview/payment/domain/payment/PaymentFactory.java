@@ -54,7 +54,7 @@ public class PaymentFactory {
                 ManagementNumber.create(),
                 ManagementNumber.createFromPaymentHistory(paymentHistory),
                 PayInfo.create(
-                        InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonth()),
+                        InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonthFormatMonth()),
                         paymentHistory.getPayAmount(),
                         PayStatus.PAY_CANCEL
                 ),
@@ -65,6 +65,8 @@ public class PaymentFactory {
 
     private static void validateCanceled(PaymentHistory paymentHistory) {
         if (paymentHistory.isCanceled()) throw new TryCancelFromCanceledPaymentException();
+        if (PayStatus.PAY_CANCEL.getName().equals(paymentHistory.getPaymentStatusName()))
+            throw new TryCancelFromCanceledPaymentException();
     }
 
     public static Payment createPaymentCancelAllByManualTax(Payment payment, BigDecimal taxValue) {
