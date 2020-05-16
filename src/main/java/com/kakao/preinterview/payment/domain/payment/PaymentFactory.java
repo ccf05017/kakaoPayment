@@ -29,7 +29,6 @@ public class PaymentFactory {
             Long cardNumber,
             String duration,
             Integer cvc,
-            String key,
             Long taxAmount
     ) {
         CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);

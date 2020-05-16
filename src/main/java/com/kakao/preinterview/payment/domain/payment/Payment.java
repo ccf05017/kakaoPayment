@@ -55,8 +55,8 @@ public class Payment {
         return this.cardInfo.getDuration();
     }
 
-    public String getPayStatusName() {
-        return this.payInfo.getPayStatus().getName();
+    public String getPayStatusCardCompanyName() {
+        return this.payInfo.getPayStatus().getCardCompanyName();
     }
 
     private Integer getCvc() {
@@ -90,5 +90,9 @@ public class Payment {
 
     public String getTaxValueString() {
         return this.getTaxValue().toString();
+    }
+
+    public String getPayStatusName() {
+        return this.payInfo.getPayStatus().getName();
     }
 }
