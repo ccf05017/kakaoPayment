@@ -99,6 +99,20 @@ class PaymentRestControllerTests {
                                 .installmentMonth(0).payAmount(110000L).build(),
                         new InvalidCardInfoParamException("CardNumber"),
                         "CardNumber"
+                ),
+
+                // Invalid Duration
+                Arguments.of(
+                        DoPayRequestDto.builder().cardNumber("1234567890123456").duration("112512").cvc(777)
+                                .installmentMonth(0).payAmount(110000L).build(),
+                        new InvalidCardInfoParamException("Duration"),
+                        "Duration"
+                ),
+                Arguments.of(
+                        DoPayRequestDto.builder().cardNumber("1234567890123456").duration("1").cvc(777)
+                                .installmentMonth(0).payAmount(110000L).build(),
+                        new InvalidCardInfoParamException("Duration"),
+                        "Duration"
                 )
         );
     }
