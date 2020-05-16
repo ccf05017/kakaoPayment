@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.payment.exceptions;
+package com.kakao.preinterview.payment.domain.cardcompany.exceptions;
 
 public class ParseToCardCompanyDataException extends RuntimeException {
 }
