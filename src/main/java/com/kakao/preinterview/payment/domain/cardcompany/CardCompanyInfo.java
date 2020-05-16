@@ -4,8 +4,19 @@ import com.kakao.preinterview.payment.domain.cardcompany.exceptions.ParseToCardC
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedValue;
 import com.kakao.preinterview.payment.domain.parser.CardCompanyDataParser;
 import com.kakao.preinterview.payment.domain.payment.Payment;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CardCompanyInfo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String stringData;
 
@@ -30,6 +41,10 @@ public class CardCompanyInfo {
                 + CardCompanyDataParser.parse(47, "", "sl");
 
         return new CardCompanyInfo(null, cardCompanyStringData);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     protected void validateStringDataLength(String cardCompanyStringData) {
