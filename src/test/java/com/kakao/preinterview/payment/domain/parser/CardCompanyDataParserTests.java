@@ -19,6 +19,7 @@ class CardCompanyDataParserTests {
     }
     public static Stream<Arguments> parseData() {
         return Stream.of(
+                Arguments.of(4, "446", "nd", " 446"),
                 Arguments.of(10, "PAYMENT", "sl", "PAYMENT   "),
                 Arguments.of(20, "1234567890123456", "nl", "1234567890123456    "),
                 Arguments.of(2, "00", "nd", "00"),

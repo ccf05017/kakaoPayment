@@ -43,11 +43,16 @@
     - [X] 세금 수동 계산으로 결제전액취소이력 객체를 만들 수 있다.
     - [X] PaymentFactory 구현
         - [X] Payment 생성 관련 책임 자체가 복잡해지기 때문에 Factory로 추출
-    - [ ] DB에 해당 값을 저장해야 한다.
-    - [ ] CardInfo를 속성으로 갖는다.(DB에는 저장하지 않는다. 암호화 된 것만 저장한다.)
+    - [ ] DB에 해당 값을 저장하지 않는다.(도메인 로직만 수행한다.)
+    - [X] CardInfo를 속성으로 갖는다.
         - 이게 없으면 암복호화 회수가 너무 늘어난다.
-    - [ ] 카드사 전송용 String data로 바꿔야 한다.
-        - [ ] 해당 일을 처리하는 객체를 따로 생성(limit, parserType, data를 입력)
+    - [X] 카드사 전송용 String data로 바꿔야 한다.
+        - [X] 해당 일을 처리하는 객체를 따로 생성(limit, parserType, data를 입력)
+        
 - [ ] CardInfo
     - [ ] id, 카드사용 정보를 갖는다.
         - [ ] 카드사용 정보는 Payment 정보를 기반으로 만들어진 String 데이터다
+
+- [ ] PaymentHistory
+    - [ ] Payment 도메인의 수행 결과를 DB에 저장한다.
+    - [ ] CardInfo는 Encryption 된 상태여야 한다.

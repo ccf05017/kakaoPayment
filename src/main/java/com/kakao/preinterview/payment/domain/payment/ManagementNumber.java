@@ -30,6 +30,10 @@ public class ManagementNumber {
         return this.value.length();
     }
 
+    protected String getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
