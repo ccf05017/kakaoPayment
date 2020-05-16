@@ -1,5 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.parser.ParserType;
+
 import java.math.BigDecimal;
 
 public class Payment {
@@ -55,5 +57,9 @@ public class Payment {
 
     public CardInfo getCardInfo() {
         return this.cardInfo;
+    }
+
+    public String getCardNumberForCardCompany() {
+        return ParserType.NUMBER_LEFT.parse(20, this.cardInfo.getCardNumber().toString());
     }
 }
