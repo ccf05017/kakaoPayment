@@ -3,7 +3,6 @@ package com.kakao.preinterview.payment.domain.payment;
 import java.math.BigDecimal;
 
 public class Payment {
-    private Long id;
     private ManagementNumber managementNumber;
     private ManagementNumber relatedManagementNumber;
     private PayInfo payInfo;
@@ -12,7 +11,6 @@ public class Payment {
     private Tax tax;
 
     protected Payment(
-            Long id,
             ManagementNumber managementNumber,
             ManagementNumber relatedManagementNumber,
             PayInfo payInfo,
@@ -20,7 +18,6 @@ public class Payment {
             EncryptedCardInfo encryptedCardInfo,
             Tax tax
     ) {
-        this.id = id;
         this.managementNumber = managementNumber;
         this.relatedManagementNumber = relatedManagementNumber;
         this.payInfo = payInfo;

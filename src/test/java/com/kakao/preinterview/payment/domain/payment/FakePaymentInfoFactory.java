@@ -16,7 +16,6 @@ public class FakePaymentInfoFactory {
         Tax tax = Tax.manualCreate(BigDecimal.valueOf(10000), payAmount);
 
         Payment fakePayment = new Payment(
-                null,
                 managementNumber,
                 null,
                 payInfo,
