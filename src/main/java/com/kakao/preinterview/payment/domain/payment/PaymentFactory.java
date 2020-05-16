@@ -15,7 +15,6 @@ public class PaymentFactory {
         CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
 
         return new Payment(
-                null,
                 ManagementNumber.create(),
                 null,
                 PayInfo.create(installmentMonths, payAmount, payStatus),
@@ -38,7 +37,6 @@ public class PaymentFactory {
         CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
 
         return new Payment(
-                null,
                 ManagementNumber.create(),
                 null,
                 PayInfo.create(installmentMonths, payAmount, payStatus),
@@ -50,7 +48,6 @@ public class PaymentFactory {
 
     public static Payment createPaymentCancelAllByAutoTax(Payment payment) {
         return new Payment(
-                null,
                 ManagementNumber.create(),
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
@@ -62,7 +59,6 @@ public class PaymentFactory {
 
     public static Payment createPaymentCancelAllByManualTax(Payment payment, BigDecimal taxValue) {
         return new Payment(
-                null,
                 ManagementNumber.create(),
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),

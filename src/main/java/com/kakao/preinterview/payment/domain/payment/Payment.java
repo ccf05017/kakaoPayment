@@ -1,12 +1,8 @@
 package com.kakao.preinterview.payment.domain.payment;
 
-import com.kakao.preinterview.payment.domain.parser.CardCompanyDataParser;
-import com.kakao.preinterview.payment.domain.payment.exceptions.ParseToCardCompanyDataException;
-
 import java.math.BigDecimal;
 
 public class Payment {
-    private Long id;
     private ManagementNumber managementNumber;
     private ManagementNumber relatedManagementNumber;
     private PayInfo payInfo;
@@ -15,7 +11,6 @@ public class Payment {
     private Tax tax;
 
     protected Payment(
-            Long id,
             ManagementNumber managementNumber,
             ManagementNumber relatedManagementNumber,
             PayInfo payInfo,
@@ -23,7 +18,6 @@ public class Payment {
             EncryptedCardInfo encryptedCardInfo,
             Tax tax
     ) {
-        this.id = id;
         this.managementNumber = managementNumber;
         this.relatedManagementNumber = relatedManagementNumber;
         this.payInfo = payInfo;
@@ -60,15 +54,15 @@ public class Payment {
         return this.cardInfo;
     }
 
-    public Long getCardNumber() {
-        return this.cardInfo.getCardNumber();
+    public String getCardNumberString() {
+        return this.cardInfo.getCardNumber().toString();
     }
 
     public String getDuration() {
         return this.cardInfo.getDuration();
     }
 
-    private String getPayStatusName() {
+    public String getPayStatusName() {
         return this.payInfo.getPayStatus().getName();
     }
 
@@ -80,38 +74,32 @@ public class Payment {
         return this.tax.getValue();
     }
 
-    private String getRelatedManagementNumberValue() {
+    public String getRelatedManagementNumberValue() {
         if (this.relatedManagementNumber == null) return "";
         return this.relatedManagementNumber.getValue();
     }
 
-    private String getManagementNumberValue() {
+    public String getManagementNumberValue() {
         return this.managementNumber.getValue();
     }
 
-    private String getInstallmentMonthFormatMonth() {
+    public String getInstallmentMonthFormatMonth() {
         return this.payInfo.getInstallmentMonth().getFormatMonth();
     }
 
-    public String parseToCardCompanyData() {
-        String cardCompanyStringData = CardCompanyDataParser.parse(4, "446", "nd")
-                + CardCompanyDataParser.parse(10, this.getPayStatusName(), "sl")
-                + CardCompanyDataParser.parse(20, this.getManagementNumberValue(), "sl")
-                + CardCompanyDataParser.parse(20, this.getCardNumber().toString(), "nl")
-                + CardCompanyDataParser.parse(2, this.getInstallmentMonthFormatMonth(), "nr")
-                + CardCompanyDataParser.parse(4, this.getDuration(), "nl")
-                + CardCompanyDataParser.parse(3, this.getCvc().toString(), "nl")
-                + CardCompanyDataParser.parse(10, this.getPayAmount().toString(), "nd")
-                + CardCompanyDataParser.parse(10, this.getTaxValue().toString(), "nr")
-                + CardCompanyDataParser.parse(20, this.getRelatedManagementNumberValue(), "sl")
-                + CardCompanyDataParser.parse(300, this.encryptedCardInfo.getEncryptedValue(), "sl")
-                + CardCompanyDataParser.parse(47, "", "sl");
-        cardCompanyDataValidate(cardCompanyStringData);
-
-        return cardCompanyStringData;
+    public String getCvcString() {
+        return this.getCvc().toString();
     }
 
-    protected void cardCompanyDataValidate(String cardCompanyStringData) {
-        if (cardCompanyStringData.length() != 450) throw new ParseToCardCompanyDataException();
+    public String getPayAmountString() {
+        return this.getPayAmount().toString();
+    }
+
+    public String getTaxValueString() {
+        return this.getTaxValue().toString();
+    }
+
+    public String encryptedCardInfoString() {
+        return this.getEncryptedCardInfo().getEncryptedValue();
     }
 }
