@@ -32,9 +32,11 @@ class PaymentHistoryTests {
         PaymentHistory paymentHistory = new PaymentHistory(payment, fakeEncryptedCardInfo);
 
         assertThat(paymentHistory).isNotNull();
+        assertThat(paymentHistory.getManagementNumber()).isEqualTo(payment.getManagementNumberValue());
+        assertThat(paymentHistory.getRelatedManagementNumber()).isEqualTo(payment.getRelatedManagementNumberValue());
         assertThat(paymentHistory.getEncryptedCardInfo()).isEqualTo(fakeEncryptedCardInfo.getEncryptedValue());
-        assertThat(paymentHistory.getInstallmentMonth()).isEqualTo(fakePayment.getInstallmentMonthFormatMonth());
-        assertThat(paymentHistory.getPayAmount()).isEqualTo(fakePayment.getPayAmountString());
+        assertThat(paymentHistory.getInstallmentMonth()).isEqualTo(payment.getInstallmentMonthFormatMonth());
+        assertThat(paymentHistory.getPayAmount()).isEqualTo(payment.getPayAmountString());
         assertThat(paymentHistory.getPaymentStatus()).isEqualTo(payStatus);
         assertThat(paymentHistory.isCanceled()).isEqualTo(isCanceled);
     }

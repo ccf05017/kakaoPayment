@@ -6,6 +6,8 @@ import com.kakao.preinterview.payment.domain.payment.Payment;
 
 public class PaymentHistory {
     private Long id;
+    private String managementNumber;
+    private String relatedManagementNumber;
     private String encryptedCardInfo;
     private String installmentMonth;
     private String payAmount;
@@ -14,6 +16,8 @@ public class PaymentHistory {
 
     private PaymentHistory(
             Long id,
+            String managementNumber,
+            String relatedManagementNumber,
             String encryptedCardInfo,
             String installmentMonth,
             String payAmount,
@@ -21,6 +25,8 @@ public class PaymentHistory {
             boolean canceled
     ) {
         this.id = id;
+        this.managementNumber = managementNumber;
+        this.relatedManagementNumber = relatedManagementNumber;
         this.encryptedCardInfo = encryptedCardInfo;
         this.installmentMonth = installmentMonth;
         this.payAmount = payAmount;
@@ -31,12 +37,22 @@ public class PaymentHistory {
     public PaymentHistory(Payment payment, EncryptedCardInfo encryptedCardInfo) {
         this(
                 null,
+                payment.getManagementNumberValue(),
+                payment.getRelatedManagementNumberValue(),
                 encryptedCardInfo.getEncryptedValue(),
                 payment.getInstallmentMonthFormatMonth(),
                 payment.getPayAmountString(),
                 payment.getPayStatusName(),
                 !payment.getPayStatusCardCompanyName().equals("PAYMENT")
         );
+    }
+
+    public String getManagementNumber() {
+        return managementNumber;
+    }
+
+    public String getRelatedManagementNumber() {
+        return relatedManagementNumber;
     }
 
     public String getEncryptedCardInfo() {
