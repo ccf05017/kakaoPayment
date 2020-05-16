@@ -63,7 +63,7 @@ public class Payment {
         return this.cardInfo.getCvc();
     }
 
-    private BigDecimal getTaxValue() {
+    public BigDecimal getTaxValue() {
         return this.tax.getValue();
     }
 

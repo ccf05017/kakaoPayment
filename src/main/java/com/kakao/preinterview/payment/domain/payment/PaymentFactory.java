@@ -1,5 +1,8 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+
 import java.math.BigDecimal;
 
 public class PaymentFactory {
@@ -42,13 +45,19 @@ public class PaymentFactory {
         );
     }
 
-    public static Payment createPaymentCancelAllByAutoTax(Payment payment) {
+    public static Payment createPaymentCancelAllByAutoTax(PaymentHistory paymentHistory, String key) throws Exception {
+        String decryptedRawCardInfo = EncryptedCardInfo.decryptFromRawData(paymentHistory.getEncryptedCardInfo(), key);
+
         return new Payment(
                 ManagementNumber.create(),
-                payment.getManagementNumber(),
-                PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
-                payment.getCardInfo(),
-                payment.getTax()
+                ManagementNumber.createFromPaymentHistory(paymentHistory),
+                PayInfo.create(
+                        InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonth()),
+                        paymentHistory.getPayAmount(),
+                        PayStatus.PAY_CANCEL
+                ),
+                CardInfo.createFromDecryptedRawString(decryptedRawCardInfo),
+                Tax.createFromPaymentHistory(paymentHistory)
         );
     }
 

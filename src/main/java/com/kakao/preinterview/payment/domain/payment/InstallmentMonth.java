@@ -1,5 +1,10 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.payment.exceptions.NotExistInstallmentFormatMonth;
+
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum InstallmentMonth {
     LUMPSUM(0, "00"),
     TWO(2, "02"),
@@ -21,6 +26,13 @@ public enum InstallmentMonth {
     InstallmentMonth(int month, String formatMonth) {
         this.month = month;
         this.formatMonth = formatMonth;
+    }
+
+    public static InstallmentMonth createFromFormatMonth(String formatMonth) {
+        Optional<InstallmentMonth> result = Arrays.asList(InstallmentMonth.values())
+                .stream().filter(installmentMonth -> formatMonth.equals(installmentMonth.getFormatMonth()))
+                .findFirst();
+        return result.orElseThrow(NotExistInstallmentFormatMonth::new);
     }
 
     public int getMonth() {

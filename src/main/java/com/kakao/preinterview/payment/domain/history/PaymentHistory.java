@@ -4,23 +4,27 @@ import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 
+import java.math.BigDecimal;
+
 public class PaymentHistory {
     private Long id;
     private String managementNumber;
     private String relatedManagementNumber;
     private String encryptedCardInfo;
     private String installmentMonth;
-    private String payAmount;
+    private BigDecimal payAmount;
+    private BigDecimal tax;
     private String paymentStatus;
     private boolean canceled;
 
-    private PaymentHistory(
+    protected PaymentHistory(
             Long id,
             String managementNumber,
             String relatedManagementNumber,
             String encryptedCardInfo,
             String installmentMonth,
-            String payAmount,
+            BigDecimal payAmount,
+            BigDecimal tax,
             String paymentStatus,
             boolean canceled
     ) {
@@ -30,6 +34,7 @@ public class PaymentHistory {
         this.encryptedCardInfo = encryptedCardInfo;
         this.installmentMonth = installmentMonth;
         this.payAmount = payAmount;
+        this.tax = tax;
         this.paymentStatus = paymentStatus;
         this.canceled = canceled;
     }
@@ -41,7 +46,8 @@ public class PaymentHistory {
                 payment.getRelatedManagementNumberValue(),
                 encryptedCardInfo.getEncryptedValue(),
                 payment.getInstallmentMonthFormatMonth(),
-                payment.getPayAmountString(),
+                payment.getPayAmount(),
+                payment.getTaxValue(),
                 payment.getPayStatusName(),
                 !payment.getPayStatusCardCompanyName().equals("PAYMENT")
         );
@@ -63,8 +69,12 @@ public class PaymentHistory {
         return installmentMonth;
     }
 
-    public String getPayAmount() {
+    public BigDecimal getPayAmount() {
         return payAmount;
+    }
+
+    public BigDecimal getTax() {
+        return this.tax;
     }
 
     public String getPaymentStatus() {

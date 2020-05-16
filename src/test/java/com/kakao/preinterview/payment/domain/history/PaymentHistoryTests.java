@@ -1,8 +1,9 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
-import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
+import com.kakao.preinterview.payment.domain.payment.FakePaymentInfoFactory;
+import com.kakao.preinterview.payment.domain.payment.Payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

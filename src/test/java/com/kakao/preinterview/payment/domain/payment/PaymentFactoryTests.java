@@ -1,5 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,22 +60,29 @@ class PaymentFactoryTests {
         assertThat(payment.getTax()).isEqualTo(Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount));
     }
 
-    @DisplayName("부가가치세 자동계산 결제전액취소 객체 생성")
+    @DisplayName("결제 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 성공")
     @Test
-    void createPaymentCancelAllByAutoTax() throws Exception {
-        Payment payment = PaymentFactory.createPaymentManualTax(
-                installmentMonths,
-                payAmount,
-                PayStatus.PAY,
-                cardNumber,
-                duration,
-                cvc,
-                taxAmount
-        );
-        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(payment);
+    void createPaymentCancelAllByAutoTaxFromNotCanceledPaymentHistory() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
+
+        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey");
 
         assertThat(canceledPayment.getRelatedManagementNumber()).isEqualTo(payment.getManagementNumber());
         assertThat(canceledPayment.getTax()).isEqualTo(payment.getTax());
+    }
+
+    @DisplayName("취소된 결제 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
+    @Test
+    void createPaymentCancelAllByAutoTaxFromCanceledPaymentHistory() {
+
+    }
+
+    @DisplayName("결제전액취소 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
+    @Test
+    void createPaymentCancelAllByAutoTaxFromPaymentCancelHistory() {
+
     }
 
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 낮은 금액으로 요청 시 성공")
