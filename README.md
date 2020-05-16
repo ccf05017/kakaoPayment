@@ -48,13 +48,13 @@
         - 이게 없으면 암복호화 회수가 너무 늘어난다.
     - [X] 카드사 전송용 String data로 바꿔야 한다.
         - [X] 해당 일을 처리하는 객체를 따로 생성(limit, parserType, data를 입력)
-    - [ ] CardInfo 암호화 관련 기능을 별도 Aggregate로 빼낸다
+    - [X] CardInfo 암호화 관련 기능을 별도 Aggregate로 빼낸다
         - 암호화 자체가 큰 역할을 지닌 책임이기 때문에 분리
         - 암호화 데이터는 실제 DB에 저장되는 CardCompanyData, PaymentHistory에서만 필요하다.
     - [X] 카드사 전달용 데이터를 별도 Aggregate로 빼낸다.
         - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님. 
                 
-- [ ] CardCompanyData
+- [X] CardCompanyData
     - [X] id, 카드사용 정보를 갖는다.
         - [X] 카드사용 정보는 Payment 정보를 기반으로 만들어진 String 데이터다
 

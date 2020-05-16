@@ -1,8 +1,9 @@
 package com.kakao.preinterview.payment.domain.cardcompany;
 
+import com.kakao.preinterview.payment.domain.cardcompany.exceptions.ParseToCardCompanyDataException;
+import com.kakao.preinterview.payment.domain.encrypt.EncryptedValue;
 import com.kakao.preinterview.payment.domain.parser.CardCompanyDataParser;
 import com.kakao.preinterview.payment.domain.payment.Payment;
-import com.kakao.preinterview.payment.domain.cardcompany.exceptions.ParseToCardCompanyDataException;
 
 public class CardCompanyInfo {
     private Long id;
@@ -14,7 +15,7 @@ public class CardCompanyInfo {
         this.stringData = stringData;
     }
 
-    public static CardCompanyInfo createCardCompanyInfo(Payment payment) {
+    public static CardCompanyInfo createCardCompanyInfo(Payment payment, EncryptedValue encryptedValue) {
         String cardCompanyStringData = CardCompanyDataParser.parse(4, "446", "nd")
                 + CardCompanyDataParser.parse(10, payment.getPayStatusName(), "sl")
                 + CardCompanyDataParser.parse(20, payment.getManagementNumberValue(), "sl")
@@ -25,7 +26,7 @@ public class CardCompanyInfo {
                 + CardCompanyDataParser.parse(10, payment.getPayAmountString(), "nd")
                 + CardCompanyDataParser.parse(10, payment.getTaxValueString(), "nr")
                 + CardCompanyDataParser.parse(20, payment.getRelatedManagementNumberValue(), "sl")
-                + CardCompanyDataParser.parse(300, payment.encryptedCardInfoString(), "sl")
+                + CardCompanyDataParser.parse(300, encryptedValue.getEncryptedValue(), "sl")
                 + CardCompanyDataParser.parse(47, "", "sl");
 
         return new CardCompanyInfo(null, cardCompanyStringData);

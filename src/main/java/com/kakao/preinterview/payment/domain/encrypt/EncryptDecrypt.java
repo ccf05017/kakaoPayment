@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.utils;
+package com.kakao.preinterview.payment.domain.encrypt;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -12,7 +12,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class EncryptDecrypt {
-    public static String encryptAES256(String msg, String key) throws Exception {
+    protected static String encryptAES256(String msg, String key) throws Exception {
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[20];
         random.nextBytes(bytes);
@@ -46,7 +46,7 @@ public class EncryptDecrypt {
         return Base64.getEncoder().encodeToString(buffer);
     }
 
-    public static String decryptAES256(String msg, String key) throws Exception {
+    protected static String decryptAES256(String msg, String key) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         ByteBuffer buffer = ByteBuffer.wrap(Base64.getDecoder().decode(msg));
 

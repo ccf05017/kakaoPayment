@@ -9,9 +9,8 @@ public class PaymentFactory {
             PayStatus payStatus,
             Long cardNumber,
             String duration,
-            Integer cvc,
-            String key
-    ) throws Exception {
+            Integer cvc
+    ) {
         CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
 
         return new Payment(
@@ -19,7 +18,6 @@ public class PaymentFactory {
                 null,
                 PayInfo.create(installmentMonths, payAmount, payStatus),
                 cardInfo,
-                EncryptedCardInfo.create(cardInfo, key),
                 Tax.autoCreate(payAmount)
         );
     }
@@ -33,7 +31,7 @@ public class PaymentFactory {
             Integer cvc,
             String key,
             Long taxAmount
-    ) throws Exception {
+    ) {
         CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
 
         return new Payment(
@@ -41,7 +39,6 @@ public class PaymentFactory {
                 null,
                 PayInfo.create(installmentMonths, payAmount, payStatus),
                 cardInfo,
-                EncryptedCardInfo.create(cardInfo, key),
                 Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount)
         );
     }
@@ -52,7 +49,6 @@ public class PaymentFactory {
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
                 payment.getCardInfo(),
-                payment.getEncryptedCardInfo(),
                 payment.getTax()
         );
     }
@@ -63,7 +59,6 @@ public class PaymentFactory {
                 payment.getManagementNumber(),
                 PayInfo.create(payment.getInstallmentMonth(), payment.getPayAmount(), PayStatus.PAY_CANCEL),
                 payment.getCardInfo(),
-                payment.getEncryptedCardInfo(),
                 Tax.createManualCancelAllTax(payment.getTax(), taxValue)
         );
     }

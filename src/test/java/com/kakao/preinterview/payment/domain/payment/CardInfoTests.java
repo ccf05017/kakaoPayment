@@ -1,6 +1,5 @@
 package com.kakao.preinterview.payment.domain.payment;
 
-import com.kakao.preinterview.payment.utils.EncryptDecrypt;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,34 +44,14 @@ class CardInfoTests {
         );
     }
 
-    @DisplayName("카드 정보는 암호화가 가능해야 한다.")
+    @DisplayName("복호화 된 CardInfoFormat 문자열에서 CardInfo를 뽑아낼 수 있어야 한다.")
     @Test
-    void encryptTest() throws Exception {
-        String testKey = "1238u892357689321701";
-
-        CardInfo cardInfo = CardInfo.create(validCardNumber, validDuration, validCvc);
-        String encrypt = cardInfo.encrypt(testKey);
-
-        assertThat(EncryptDecrypt.decryptAES256(encrypt, testKey)).isEqualTo(
-                validCardNumber.toString() + "|"
-                + validDuration.toString() + "|"
-                + validCvc.toString()
-        );
-    }
-
-    @DisplayName("카드 정보는 복호화가 가능해야 한다. (복호화 시 CardInfo 객체를 반환한다.)")
-    @Test
-    void decryptTest() throws Exception {
-        String testKey = "1238u892357689321701";
-
-        CardInfo cardInfo = CardInfo.create(validCardNumber, validDuration, validCvc);
-        String encryptString = cardInfo.encrypt(testKey);
-
-        CardInfo decryptCardInfo = CardInfo.decrypt(encryptString, testKey);
-
-        assertThat(decryptCardInfo.getCardNumber()).isEqualTo(validCardNumber);
-        assertThat(decryptCardInfo.getDuration()).isEqualTo(validDuration);
-        assertThat(decryptCardInfo.getCvc()).isEqualTo(validCvc);
+    void decryptTest() {
+        CardInfo cardInfo = CardInfo
+                .createFromDecryptedRawString(validCardNumber + "|" + validDuration + "|" + validCvc);
+        assertThat(cardInfo.getCardNumber()).isEqualTo(validCardNumber);
+        assertThat(cardInfo.getDuration()).isEqualTo(validDuration);
+        assertThat(cardInfo.getCvc()).isEqualTo(validCvc);
     }
 
     @DisplayName("동등성 비교가 가능해야 한다.")

@@ -1,7 +1,5 @@
 package com.kakao.preinterview.payment.domain.payment;
 
-import com.kakao.preinterview.payment.utils.EncryptDecrypt;
-
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -21,6 +19,16 @@ public class CardInfo {
         this.cardNumber = cardNumber;
         this.duration = duration;
         this.cvc = cvc;
+    }
+
+    public static CardInfo createFromDecryptedRawString(String decryptedRawString) {
+        StringTokenizer stringTokenizer = new StringTokenizer(decryptedRawString, "|");
+
+        Long cardNumber = Long.parseLong(stringTokenizer.nextToken());
+        String duration = stringTokenizer.nextToken();
+        Integer cvc = Integer.parseInt(stringTokenizer.nextToken());
+
+        return new CardInfo(cardNumber, duration, cvc);
     }
 
     private void validation(long cardNumber, String duration, int cvc) {
@@ -48,26 +56,10 @@ public class CardInfo {
         return new CardInfo(cardNumber, duration, cvc);
     }
 
-    private String stringSum() {
+    public String toEncryptRawData() {
         return this.cardNumber.toString() + "|"
-                + this.duration.toString() + "|"
+                + this.duration + "|"
                 + this.cvc.toString();
-    }
-
-    public String encrypt(String key) throws Exception {
-        return EncryptDecrypt.encryptAES256(stringSum(), key);
-    }
-
-    public static CardInfo decrypt(String encryptString, String key) throws Exception {
-        String decryptString = EncryptDecrypt.decryptAES256(encryptString, key);
-
-        StringTokenizer stringTokenizer = new StringTokenizer(decryptString, "|");
-
-        Long cardNumber = Long.parseLong(stringTokenizer.nextToken());
-        String duration = stringTokenizer.nextToken();
-        Integer cvc = Integer.parseInt(stringTokenizer.nextToken());
-
-        return new CardInfo(cardNumber, duration, cvc);
     }
 
     public Long getCardNumber() {

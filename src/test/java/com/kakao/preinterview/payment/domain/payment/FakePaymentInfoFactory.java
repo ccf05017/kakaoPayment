@@ -20,7 +20,6 @@ public class FakePaymentInfoFactory {
                 null,
                 payInfo,
                 cardInfo,
-                new EncryptedCardInfo("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"),
                 tax
         );
 

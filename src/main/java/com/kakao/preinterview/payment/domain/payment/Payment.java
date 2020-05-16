@@ -7,7 +7,6 @@ public class Payment {
     private ManagementNumber relatedManagementNumber;
     private PayInfo payInfo;
     private CardInfo cardInfo;
-    private EncryptedCardInfo encryptedCardInfo;
     private Tax tax;
 
     protected Payment(
@@ -15,14 +14,12 @@ public class Payment {
             ManagementNumber relatedManagementNumber,
             PayInfo payInfo,
             CardInfo cardInfo,
-            EncryptedCardInfo encryptedCardInfo,
             Tax tax
     ) {
         this.managementNumber = managementNumber;
         this.relatedManagementNumber = relatedManagementNumber;
         this.payInfo = payInfo;
         this.cardInfo = cardInfo;
-        this.encryptedCardInfo = encryptedCardInfo;
         this.tax = tax;
     }
 
@@ -40,10 +37,6 @@ public class Payment {
 
     public BigDecimal getPayAmount() {
         return this.payInfo.getPayAmount();
-    }
-
-    public EncryptedCardInfo getEncryptedCardInfo() {
-        return this.encryptedCardInfo;
     }
 
     public ManagementNumber getRelatedManagementNumber() {
@@ -97,9 +90,5 @@ public class Payment {
 
     public String getTaxValueString() {
         return this.getTaxValue().toString();
-    }
-
-    public String encryptedCardInfoString() {
-        return this.getEncryptedCardInfo().getEncryptedValue();
     }
 }
