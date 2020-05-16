@@ -29,7 +29,7 @@
 - [X] Parser
     - [X] 현재 기능을 enum으로 추출해서 응집도를 높인다.
 
-- [ ] PaymentHistory
+- [ ] Payment
     - [X] 관리번호, PayInfo, CardInfo(암호화 된), Tax를 갖는다.
         - [X] 관리번호 추가
         - [X] 연관된 Payment 관리번호 추가 (결제 시엔 null, 결제 취소 시에는 결제 번호)
@@ -43,8 +43,21 @@
     - [X] 세금 수동 계산으로 결제전액취소이력 객체를 만들 수 있다.
     - [X] PaymentFactory 구현
         - [X] Payment 생성 관련 책임 자체가 복잡해지기 때문에 Factory로 추출
-    - [ ] DB에 해당 값을 저장해야 한다.
-    
-- [ ] CardInfo
+    - [X] DB에 해당 값을 저장하지 않는다.(도메인 로직만 수행한다.)
+    - [X] CardInfo를 속성으로 갖는다.
+        - 이게 없으면 암복호화 회수가 너무 늘어난다.
+    - [X] 카드사 전송용 String data로 바꿔야 한다.
+        - [X] 해당 일을 처리하는 객체를 따로 생성(limit, parserType, data를 입력)
+    - [ ] CardInfo 암호화 관련 기능을 별도 Aggregate로 빼낸다
+        - 암호화 자체가 큰 역할을 지닌 책임이기 때문에 분리
+        - 암호화 데이터는 실제 DB에 저장되는 CardCompanyData, PaymentHistory에서만 필요하다.
+    - [ ] 카드사 전달용 데이터를 별도 Aggregate로 빼낸다.
+        - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님. 
+                
+- [ ] CardCompanyData
     - [ ] id, 카드사용 정보를 갖는다.
         - [ ] 카드사용 정보는 Payment 정보를 기반으로 만들어진 String 데이터다
+
+- [ ] PaymentHistory
+    - [ ] Payment 도메인의 수행 결과를 DB에 저장한다.
+    - [ ] CardInfo는 Encryption 된 상태여야 한다.

@@ -1,4 +1,4 @@
-package com.kakao.preinterview.payment.domain.paymentHistory;
+package com.kakao.preinterview.payment.domain.payment;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,7 @@ class EncryptedCardInfoTests {
 
     @BeforeEach
     public void setup() {
-        cardInfo = CardInfo.create(1111222233334444L, 1122, 111);
+        cardInfo = CardInfo.create(1111222233334444L, "1122", 111);
         key = "TestKey";
     }
 
@@ -28,6 +28,6 @@ class EncryptedCardInfoTests {
         EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(cardInfo, key);
         assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getCardNumber().toString());
         assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getCvc().toString());
-        assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getDuration().toString());
+        assertThat(encryptedCardInfo.getEncryptedValue()).doesNotContain(cardInfo.getDuration());
     }
 }
