@@ -17,7 +17,7 @@ public class CardCompanyInfo {
 
     public static CardCompanyInfo createCardCompanyInfo(Payment payment, EncryptedValue encryptedValue) {
         String cardCompanyStringData = CardCompanyDataParser.parse(4, "446", "nd")
-                + CardCompanyDataParser.parse(10, payment.getPayStatusName(), "sl")
+                + CardCompanyDataParser.parse(10, payment.getPayStatusCardCompanyName(), "sl")
                 + CardCompanyDataParser.parse(20, payment.getManagementNumberValue(), "sl")
                 + CardCompanyDataParser.parse(20, payment.getCardNumberString(), "nl")
                 + CardCompanyDataParser.parse(2, payment.getInstallmentMonthFormatMonth(), "nr")

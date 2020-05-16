@@ -29,10 +29,10 @@
 - [X] Parser
     - [X] 현재 기능을 enum으로 추출해서 응집도를 높인다.
 
-- [ ] Payment
-    - [X] 관리번호, PayInfo, CardInfo(암호화 된), Tax를 갖는다.
+- [X] Payment
+    - [X] 관리번호, 연관된 관리번호, PayInfo, CardInfo, Tax를 갖는다.
         - [X] 관리번호 추가
-        - [X] 연관된 Payment 관리번호 추가 (결제 시엔 null, 결제 취소 시에는 결제 번호)
+        - [X] 연관된 관리번호는 결제 시엔 null, 결제 취소 시에는 연관된 결제건의 관리번호이다.
     - [X] CardInfo가 String 타입이어서 암호화를 보장할 수 없기 때문에 따로 객체를 만든다.
     - [X] Tax를 수동으로 입력받아서 객체를 만들 수 있다.
     - [X] Tax를 받지 않고도 객체를 만들 수 있다.
@@ -52,12 +52,18 @@
         - 암호화 자체가 큰 역할을 지닌 책임이기 때문에 분리
         - 암호화 데이터는 실제 DB에 저장되는 CardCompanyData, PaymentHistory에서만 필요하다.
     - [X] 카드사 전달용 데이터를 별도 Aggregate로 빼낸다.
-        - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님. 
+        - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님.
+    - [ ] 결제전액취소는 PaymentHistory 객체로부터 정보를 받을 수 있도록 변경해야 한다.
+        - [ ] PaymentFactory 변경
+        - [ ] 결제 취소 관련 도메인 로직에 어긋나지 않는지 확인
                 
-- [X] CardCompanyData
+- [ ] CardCompanyData
     - [X] id, 카드사용 정보를 갖는다.
         - [X] 카드사용 정보는 Payment 정보를 기반으로 만들어진 String 데이터다
+    - [ ] 카드사에 보내는 걸 가정하고 DB에 저장할 수 있다.
 
 - [ ] PaymentHistory
+    - [X] 암호화 된 카드정보, 할부개월수, 결제금액, 결제타입, 취소여부를 속성으로 갖는다.
+        - [X] 결제전액취소 History 건은 취소 여부 속성을 true로 갖는다.
+        - [X] 결제 History 건은 취소 여부 속성을 바꿀 수 있다.
     - [ ] Payment 도메인의 수행 결과를 DB에 저장한다.
-    - [ ] CardInfo는 Encryption 된 상태여야 한다.

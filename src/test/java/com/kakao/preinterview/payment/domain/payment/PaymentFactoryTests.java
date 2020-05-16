@@ -15,7 +15,6 @@ class PaymentFactoryTests {
     private Long cardNumber;
     private String duration;
     private Integer cvc;
-    private String key;
     private Long taxAmount;
 
     @BeforeEach
@@ -25,13 +24,12 @@ class PaymentFactoryTests {
         cardNumber = 1111222233334444L;
         duration = "1231";
         cvc = 123;
-        key = "testKey";
         taxAmount = 150L;
     }
 
     @DisplayName("부가가치세 자동계산 결제 객체 생성")
     @Test
-    void createPaymentByAutoTax() throws Exception {
+    void createPaymentByAutoTax() {
         Payment payment = PaymentFactory.createPaymentAutoTax(
                 installmentMonths,
                 payAmount,
@@ -46,7 +44,7 @@ class PaymentFactoryTests {
 
     @DisplayName("부가가치세 수동계산 결제 객체 생성")
     @Test
-    void createPaymentByManualTax() throws Exception {
+    void createPaymentByManualTax() {
         Payment payment = PaymentFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
@@ -54,7 +52,6 @@ class PaymentFactoryTests {
                 cardNumber,
                 duration,
                 cvc,
-                key,
                 taxAmount
         );
         assertThat(payment).isNotNull();
@@ -71,7 +68,6 @@ class PaymentFactoryTests {
                 cardNumber,
                 duration,
                 cvc,
-                key,
                 taxAmount
         );
         Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(payment);
@@ -82,7 +78,7 @@ class PaymentFactoryTests {
 
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 낮은 금액으로 요청 시 성공")
     @Test
-    void createPaymentCancelAllByManualTaxSuccess() throws Exception {
+    void createPaymentCancelAllByManualTaxSuccess() {
         Payment payment = PaymentFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
@@ -90,7 +86,6 @@ class PaymentFactoryTests {
                 cardNumber,
                 duration,
                 cvc,
-                key,
                 taxAmount
         );
         BigDecimal requestTaxValue = BigDecimal.valueOf(1);
@@ -102,7 +97,7 @@ class PaymentFactoryTests {
 
     @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 높은 금액으로 요청 시 실패")
     @Test
-    void createPaymentCancelAllByManualTaxFail() throws Exception {
+    void createPaymentCancelAllByManualTaxFail() {
         Payment payment = PaymentFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
@@ -110,7 +105,6 @@ class PaymentFactoryTests {
                 cardNumber,
                 duration,
                 cvc,
-                key,
                 taxAmount
         );
         BigDecimal requestTaxValue = BigDecimal.valueOf(100000);
