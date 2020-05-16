@@ -1,7 +1,5 @@
 package com.kakao.preinterview.payment.domain.payment;
 
-import com.kakao.preinterview.payment.domain.parser.ParserType;
-
 import java.math.BigDecimal;
 
 public class Payment {
@@ -65,17 +63,5 @@ public class Payment {
 
     public String getDuration() {
         return this.cardInfo.getDuration();
-    }
-
-    public String getCardNumberForCardCompany() {
-        return ParserType.NUMBER_LEFT.parse(20, this.getCardNumber().toString());
-    }
-
-    public String getInstallmentMonthForCardCompany() {
-        return ParserType.NUMBER_DEFAULT.parse(2, this.getInstallmentMonth().getFormatMonth());
-    }
-
-    public String getDurationForCardCompany() {
-        return ParserType.NUMBER_LEFT.parse(4, this.getDuration());
     }
 }

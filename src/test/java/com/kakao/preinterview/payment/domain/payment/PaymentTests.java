@@ -1,12 +1,8 @@
 package com.kakao.preinterview.payment.domain.payment;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class PaymentTests {
     private ManagementNumber managementNumber = new ManagementNumber("XXXXXXXXXXXXXXXXXXXX");
@@ -34,23 +30,5 @@ class PaymentTests {
                 EncryptedCardInfo.create(cardInfo, key),
                 tax
         );
-    }
-
-    @DisplayName("카드사 전송용 카드 번호 확인")
-    @Test
-    void cardNumberForCardCompanyTest() {
-        assertThat(fakePayment.getCardNumberForCardCompany()).isEqualTo("1234567890123456    ");
-    }
-
-    @DisplayName("카드사 전송용 할부개월 수 확인")
-    @Test
-    void installmentMonthsForCardCompanyTest() {
-        assertThat(fakePayment.getInstallmentMonthForCardCompany()).isEqualTo("00");
-    }
-
-    @DisplayName("카드사 전송용 카드유효기간 확인")
-    @Test
-    void durationForCardCompanyTest() {
-        assertThat(fakePayment.getDurationForCardCompany()).isEqualTo("1125");
     }
 }
