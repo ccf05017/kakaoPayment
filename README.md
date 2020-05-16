@@ -54,7 +54,7 @@
     - [X] 카드사 전달용 데이터를 별도 Aggregate로 빼낸다.
         - 현재 parsing 로직은 실제로 Payment 객체 관련 로직을 수행하기 필요한 사항이 아님. 
                 
-- [ ] CardCompanyData
+- [X] CardCompanyData
     - [X] id, 카드사용 정보를 갖는다.
         - [X] 카드사용 정보는 Payment 정보를 기반으로 만들어진 String 데이터다
 

@@ -1,5 +1,6 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.encrypt;
 
+import com.kakao.preinterview.payment.domain.payment.CardInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

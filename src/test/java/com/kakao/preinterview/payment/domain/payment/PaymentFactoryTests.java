@@ -38,8 +38,7 @@ class PaymentFactoryTests {
                 PayStatus.PAY,
                 cardNumber,
                 duration,
-                cvc,
-                key
+                cvc
         );
         assertThat(payment).isNotNull();
         assertThat(payment.getTax()).isEqualTo(Tax.autoCreate(payAmount));
