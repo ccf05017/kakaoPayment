@@ -18,12 +18,12 @@ import java.net.URISyntaxException;
 public class PaymentRestController {
     private final PaymentService paymentService;
 
-    @PostMapping("/payment")
+    @PostMapping("/payments")
     public ResponseEntity<DoPayResponseDto> doPayment(
             @Valid @RequestBody DoPayRequestDto resource
     ) throws URISyntaxException {
-        String url = "hello";
         String managementNumber = paymentService.doPay(resource);
+        String url = "/payments/" + managementNumber;
 
         return ResponseEntity
                 .created(new URI(url))
