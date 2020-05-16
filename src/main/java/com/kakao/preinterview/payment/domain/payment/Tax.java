@@ -1,5 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -8,6 +10,10 @@ public class Tax {
 
     private Tax(BigDecimal value) {
         this.value = value;
+    }
+
+    public static Tax createFromPaymentHistory(PaymentHistory paymentHistory) {
+        return new Tax(paymentHistory.getTax());
     }
 
     public static Tax manualCreate(BigDecimal value, BigDecimal payAmount) {

@@ -1,8 +1,9 @@
-package com.kakao.preinterview.payment.domain.payment;
+package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
-import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
+import com.kakao.preinterview.payment.domain.payment.FakePaymentInfoFactory;
+import com.kakao.preinterview.payment.domain.payment.Payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,12 @@ class PaymentHistoryTests {
         PaymentHistory paymentHistory = new PaymentHistory(payment, fakeEncryptedCardInfo);
 
         assertThat(paymentHistory).isNotNull();
+        assertThat(paymentHistory.getManagementNumber()).isEqualTo(payment.getManagementNumberValue());
+        assertThat(paymentHistory.getRelatedManagementNumber()).isEqualTo(payment.getRelatedManagementNumberValue());
         assertThat(paymentHistory.getEncryptedCardInfo()).isEqualTo(fakeEncryptedCardInfo.getEncryptedValue());
-        assertThat(paymentHistory.getInstallmentMonth()).isEqualTo(fakePayment.getInstallmentMonthFormatMonth());
-        assertThat(paymentHistory.getPayAmount()).isEqualTo(fakePayment.getPayAmountString());
-        assertThat(paymentHistory.getPaymentStatus()).isEqualTo(payStatus);
+        assertThat(paymentHistory.getInstallmentMonthFormatMonth()).isEqualTo(payment.getInstallmentMonthFormatMonth());
+        assertThat(paymentHistory.getPayAmount()).isEqualTo(payment.getPayAmountString());
+        assertThat(paymentHistory.getPaymentStatusName()).isEqualTo(payStatus);
         assertThat(paymentHistory.isCanceled()).isEqualTo(isCanceled);
     }
     public static Stream<Arguments> paymentStream() {

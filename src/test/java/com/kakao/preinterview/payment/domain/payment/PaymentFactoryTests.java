@@ -1,5 +1,8 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,58 +61,95 @@ class PaymentFactoryTests {
         assertThat(payment.getTax()).isEqualTo(Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount));
     }
 
-    @DisplayName("부가가치세 자동계산 결제전액취소 객체 생성")
+    @DisplayName("결제 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 성공")
     @Test
-    void createPaymentCancelAllByAutoTax() throws Exception {
-        Payment payment = PaymentFactory.createPaymentManualTax(
-                installmentMonths,
-                payAmount,
-                PayStatus.PAY,
-                cardNumber,
-                duration,
-                cvc,
-                taxAmount
-        );
-        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(payment);
+    void createPaymentCancelAllByAutoTaxFromNotCanceledPaymentHistory() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
 
-        assertThat(canceledPayment.getRelatedManagementNumber()).isEqualTo(payment.getManagementNumber());
-        assertThat(canceledPayment.getTax()).isEqualTo(payment.getTax());
+        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey");
+
+        assertThat(canceledPayment.getRelatedManagementNumberValue()).isEqualTo(paymentHistory.getManagementNumber());
+        assertThat(canceledPayment.getTaxValue()).isEqualTo(paymentHistory.getTax());
     }
 
-    @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 낮은 금액으로 요청 시 성공")
+    @DisplayName("취소된 결제 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
     @Test
-    void createPaymentCancelAllByManualTaxSuccess() {
-        Payment payment = PaymentFactory.createPaymentManualTax(
-                installmentMonths,
-                payAmount,
-                PayStatus.PAY,
-                cardNumber,
-                duration,
-                cvc,
-                taxAmount
-        );
+    void createPaymentCancelAllByAutoTaxFromCanceledPaymentHistory() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
+        paymentHistory.toCanceled();
+
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey"))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제전액취소 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
+    @Test
+    void createPaymentCancelAllByAutoTaxFromPaymentCancelHistory() throws Exception {
+        Payment canceledPayment = FakePaymentInfoFactory.createFakeCancelPayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(canceledPayment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(canceledPayment, encryptedCardInfo);
+
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey"))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제 History를 기반으로 적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 성공")
+    @Test
+    void createPaymentCancelAllByManualTaxSuccess() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
         BigDecimal requestTaxValue = BigDecimal.valueOf(1);
-        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByManualTax(payment, requestTaxValue);
 
-        assertThat(canceledPayment.getRelatedManagementNumber()).isEqualTo(payment.getManagementNumber());
-        assertThat(canceledPayment.getTax()).isEqualTo(Tax.createManualCancelAllTax(payment.getTax(), requestTaxValue));
+        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByManualTax(
+                paymentHistory, "testKey", requestTaxValue
+        );
+
+        assertThat(canceledPayment.getRelatedManagementNumberValue()).isEqualTo(paymentHistory.getManagementNumber());
+        assertThat(canceledPayment.getTax().getValue()).isEqualTo(requestTaxValue);
     }
 
-    @DisplayName("부가가치세 수동계산 결제전액취소 객체 생성 - 결제 부가가치세보다 높은 금액으로 요청 시 실패")
+    @DisplayName("취소된 결제 History를 기반으로 적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 실패")
     @Test
-    void createPaymentCancelAllByManualTaxFail() {
-        Payment payment = PaymentFactory.createPaymentManualTax(
-                installmentMonths,
-                payAmount,
-                PayStatus.PAY,
-                cardNumber,
-                duration,
-                cvc,
-                taxAmount
-        );
+    void createPaymentCancelAllByManualTaxFromCanceledPaymentHistory() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
+        paymentHistory.toCanceled();
+        BigDecimal requestTaxValue = BigDecimal.valueOf(1);
+
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
+                paymentHistory, "testKey", requestTaxValue
+        )).isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제전액취소 History를 기반으로 적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 실패")
+    @Test
+    void createPaymentCancelAllByManualTaxFromPaymentCancelHistory() throws Exception {
+        Payment canceledPayment = FakePaymentInfoFactory.createFakeCancelPayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(canceledPayment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(canceledPayment, encryptedCardInfo);
+        BigDecimal requestTaxValue = BigDecimal.valueOf(1);
+
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
+                paymentHistory, "testKey", requestTaxValue
+        )).isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제 History를 기반으로 부적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 성공")
+    @Test
+    void createPaymentCancelAllByManualTaxFail() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
         BigDecimal requestTaxValue = BigDecimal.valueOf(100000);
 
-        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(payment, requestTaxValue))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
+                paymentHistory, "testKey", requestTaxValue
+        )).isInstanceOf(IllegalArgumentException.class);
     }
 }

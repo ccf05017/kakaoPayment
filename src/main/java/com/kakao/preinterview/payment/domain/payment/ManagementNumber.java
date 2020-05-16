@@ -1,5 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,6 +17,10 @@ public class ManagementNumber {
         return new ManagementNumber(uuid.toString()
                 .replaceAll("-", "")
                 .substring(0,20));
+    }
+
+    public static ManagementNumber createFromPaymentHistory(PaymentHistory paymentHistory) {
+        return new ManagementNumber(paymentHistory.getManagementNumber());
     }
 
     protected static boolean checkEqualPossibility(int recursiveTime) {

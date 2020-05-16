@@ -4,55 +4,81 @@ import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 
+import java.math.BigDecimal;
+
 public class PaymentHistory {
     private Long id;
+    private String managementNumber;
+    private String relatedManagementNumber;
     private String encryptedCardInfo;
-    private String installmentMonth;
-    private String payAmount;
-    private String paymentStatus;
+    private String installmentMonthFormatMonth;
+    private BigDecimal payAmount;
+    private BigDecimal tax;
+    private String paymentStatusName;
     private boolean canceled;
 
-    private PaymentHistory(
+    protected PaymentHistory(
             Long id,
+            String managementNumber,
+            String relatedManagementNumber,
             String encryptedCardInfo,
-            String installmentMonth,
-            String payAmount,
-            String paymentStatus,
+            String installmentMonthFormatMonth,
+            BigDecimal payAmount,
+            BigDecimal tax,
+            String paymentStatusName,
             boolean canceled
     ) {
         this.id = id;
+        this.managementNumber = managementNumber;
+        this.relatedManagementNumber = relatedManagementNumber;
         this.encryptedCardInfo = encryptedCardInfo;
-        this.installmentMonth = installmentMonth;
+        this.installmentMonthFormatMonth = installmentMonthFormatMonth;
         this.payAmount = payAmount;
-        this.paymentStatus = paymentStatus;
+        this.tax = tax;
+        this.paymentStatusName = paymentStatusName;
         this.canceled = canceled;
     }
 
     public PaymentHistory(Payment payment, EncryptedCardInfo encryptedCardInfo) {
         this(
                 null,
+                payment.getManagementNumberValue(),
+                payment.getRelatedManagementNumberValue(),
                 encryptedCardInfo.getEncryptedValue(),
                 payment.getInstallmentMonthFormatMonth(),
-                payment.getPayAmountString(),
+                payment.getPayAmount(),
+                payment.getTaxValue(),
                 payment.getPayStatusName(),
                 !payment.getPayStatusCardCompanyName().equals("PAYMENT")
         );
+    }
+
+    public String getManagementNumber() {
+        return managementNumber;
+    }
+
+    public String getRelatedManagementNumber() {
+        return relatedManagementNumber;
     }
 
     public String getEncryptedCardInfo() {
         return encryptedCardInfo;
     }
 
-    public String getInstallmentMonth() {
-        return installmentMonth;
+    public String getInstallmentMonthFormatMonth() {
+        return installmentMonthFormatMonth;
     }
 
-    public String getPayAmount() {
+    public BigDecimal getPayAmount() {
         return payAmount;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
+    public BigDecimal getTax() {
+        return this.tax;
+    }
+
+    public String getPaymentStatusName() {
+        return paymentStatusName;
     }
 
     public boolean isCanceled() {
