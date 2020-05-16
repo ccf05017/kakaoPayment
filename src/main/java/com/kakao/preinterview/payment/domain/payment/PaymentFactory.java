@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.domain.payment;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
 
 import java.math.BigDecimal;
 
@@ -46,6 +47,7 @@ public class PaymentFactory {
     }
 
     public static Payment createPaymentCancelAllByAutoTax(PaymentHistory paymentHistory, String key) throws Exception {
+        validateCanceled(paymentHistory);
         String decryptedRawCardInfo = EncryptedCardInfo.decryptFromRawData(paymentHistory.getEncryptedCardInfo(), key);
 
         return new Payment(
@@ -59,6 +61,10 @@ public class PaymentFactory {
                 CardInfo.createFromDecryptedRawString(decryptedRawCardInfo),
                 Tax.createFromPaymentHistory(paymentHistory)
         );
+    }
+
+    private static void validateCanceled(PaymentHistory paymentHistory) {
+        if (paymentHistory.isCanceled()) throw new TryCancelFromCanceledPaymentException();
     }
 
     public static Payment createPaymentCancelAllByManualTax(Payment payment, BigDecimal taxValue) {

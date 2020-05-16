@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.domain.payment;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,8 +76,14 @@ class PaymentFactoryTests {
 
     @DisplayName("취소된 결제 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
     @Test
-    void createPaymentCancelAllByAutoTaxFromCanceledPaymentHistory() {
+    void createPaymentCancelAllByAutoTaxFromCanceledPaymentHistory() throws Exception {
+        Payment payment = FakePaymentInfoFactory.createFakePayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
+        paymentHistory.toCanceled();
 
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey"))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 
     @DisplayName("결제전액취소 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
