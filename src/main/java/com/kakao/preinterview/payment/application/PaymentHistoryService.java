@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.application;
 
+import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
@@ -21,7 +22,8 @@ public class PaymentHistoryService {
 
     @Transactional
     public GetPayHistoryResponseDto getPaymentHistory(String managementNumber) throws Exception {
-        PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber);
+        PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber)
+                .orElseThrow(NotExistPaymentHistoryException::new);
         String decryptedCardData = EncryptedCardInfo.decryptFromRawData(paymentHistory.getEncryptedCardInfo(), key);
         CardInfo cardInfo = CardInfo.createFromDecryptedRawString(decryptedCardData);
         String cardNumberString = cardInfo.getCardNumber().toString();

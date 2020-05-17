@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.application;
 
+import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.domain.history.FakePaymentHistoryFactory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
 import com.kakao.preinterview.payment.ui.dto.GetPayHistoryResponseDto;
@@ -13,8 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +38,7 @@ class PaymentHistoryServiceTests {
     void getPaymentHistory() throws Exception {
         String managementNumber = "XXXXXXXXXXXXXXXXXXXX";
         given(paymentHistoryRepository.findByManagementNumber(managementNumber))
-                .willReturn(FakePaymentHistoryFactory.create());
+                .willReturn(Optional.of(FakePaymentHistoryFactory.create()));
 
         GetPayHistoryResponseDto paymentHistoryDto = paymentHistoryService.getPaymentHistory(managementNumber);
         assertThat(paymentHistoryDto.getManagementNumber()).isEqualTo(managementNumber);
@@ -43,5 +46,16 @@ class PaymentHistoryServiceTests {
         assertThat(paymentHistoryDto.getCardInfoData().getCardNumber()).isEqualTo("123456*******456");
         assertThat(paymentHistoryDto.getPayAmount()).isEqualTo(BigDecimal.valueOf(110000));
         assertThat(paymentHistoryDto.getTaxAmount()).isEqualTo(BigDecimal.valueOf(10000));
+    }
+
+    @DisplayName("존재하지 않는 결제 이력 조회 시 NotExistPaymentHistoryException 발생")
+    @Test
+    void getPaymentHistoryFailWithNotExistManagementNumber() throws Exception {
+        String managementNumber = "notExist";
+        given(paymentHistoryRepository.findByManagementNumber(managementNumber))
+                .willThrow(new NotExistPaymentHistoryException());
+
+        assertThatThrownBy(() -> paymentHistoryService.getPaymentHistory(managementNumber))
+                .isInstanceOf(NotExistPaymentHistoryException.class);
     }
 }
