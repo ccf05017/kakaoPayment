@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPayResponseDto {
+public class GetPayHistoryResponseDto {
     private String managementNumber;
     private CardInfoData cardInfoData;
-    private boolean canceled;
+    private String status;
     private BigDecimal payAmount;
     private BigDecimal taxAmount;
 }

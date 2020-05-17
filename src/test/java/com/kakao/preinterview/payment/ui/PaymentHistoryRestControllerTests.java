@@ -3,7 +3,7 @@ package com.kakao.preinterview.payment.ui;
 import com.kakao.preinterview.payment.application.PaymentHistoryService;
 import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.ui.dto.CardInfoData;
-import com.kakao.preinterview.payment.ui.dto.GetPayResponseDto;
+import com.kakao.preinterview.payment.ui.dto.GetPayHistoryResponseDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,18 +40,18 @@ class PaymentHistoryRestControllerTests {
     @Test
     void getPaymentTest() throws Exception {
         String managementNumber = "exist";
-        GetPayResponseDto fakeGetPayResponseDto = GetPayResponseDto.builder()
+        GetPayHistoryResponseDto fakeGetPayHistoryResponseDto = GetPayHistoryResponseDto.builder()
                 .managementNumber("exist")
                 .cardInfoData(CardInfoData.builder()
                         .cardNumber("123456*******456")
                         .duration("1125")
                         .cvc(777)
                         .build())
-                .canceled(false)
+                .status("PAY")
                 .payAmount(BigDecimal.valueOf(110000))
                 .taxAmount(BigDecimal.valueOf(10000))
                 .build();
-        given(paymentHistoryService.getPaymentHistory(managementNumber)).willReturn(fakeGetPayResponseDto);
+        given(paymentHistoryService.getPaymentHistory(managementNumber)).willReturn(fakeGetPayHistoryResponseDto);
 
         mockMvc.perform(get("/paymentHistories/" + managementNumber))
                 .andExpect(status().isOk())
@@ -59,7 +59,7 @@ class PaymentHistoryRestControllerTests {
                 .andExpect(jsonPath("$.cardInfoData.cardNumber", is("123456*******456")))
                 .andExpect(jsonPath("$.cardInfoData.duration", is("1125")))
                 .andExpect(jsonPath("$.cardInfoData.cvc", is(777)))
-                .andExpect(jsonPath("$.canceled", is(false)))
+                .andExpect(jsonPath("$.status", is("PAY")))
                 .andExpect(jsonPath("$.payAmount", is(110000)))
                 .andExpect(jsonPath("$.taxAmount", is(10000)))
         ;
