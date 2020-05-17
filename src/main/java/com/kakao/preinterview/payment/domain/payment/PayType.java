@@ -1,6 +1,6 @@
 package com.kakao.preinterview.payment.domain.payment;
 
-public enum PayStatus {
+public enum PayType {
     PAY("PAY", "PAYMENT"),
     PAY_CANCEL("PAY_CANCEL", "CANCEL"),
     PAY_PARTIAL_CANCEL("PAY_PARTIAL_CANCEL","CANCEL");
@@ -8,7 +8,7 @@ public enum PayStatus {
     private String name;
     private String cardCompanyName;
 
-    PayStatus(String name, String cardCompanyName) {
+    PayType(String name, String cardCompanyName) {
         this.name = name;
         this.cardCompanyName = cardCompanyName;
     }

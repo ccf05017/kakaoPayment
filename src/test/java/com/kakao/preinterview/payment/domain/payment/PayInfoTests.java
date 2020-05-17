@@ -15,19 +15,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class PayInfoTests {
     private InstallmentMonth installmentMonths = InstallmentMonth.TWELVE;
     private BigDecimal payAmount = BigDecimal.valueOf(1000);
-    private PayStatus payStatus = PayStatus.PAY;
+    private PayType payType = PayType.PAY;
 
     @DisplayName("할부개월수, 결제금액, 결제 타입을 입력 받아서 객체를 생성할 수 있다.")
     @Test
     void createTest() {
-        assertThat(PayInfo.create(installmentMonths, payAmount, payStatus)).isNotNull();
+        assertThat(PayInfo.create(installmentMonths, payAmount, payType)).isNotNull();
     }
 
     @DisplayName("범위를 벗어난 결제 금액으로 객체를 생성할 수 없다.")
     @ParameterizedTest
     @MethodSource("invalidParams")
     void validationTest(BigDecimal invalidPayAmount) {
-        assertThatThrownBy(() -> PayInfo.create(installmentMonths, invalidPayAmount, payStatus))
+        assertThatThrownBy(() -> PayInfo.create(installmentMonths, invalidPayAmount, payType))
                 .isInstanceOf(InvalidPayAmountException.class);
     }
     public static Stream<BigDecimal> invalidParams() {
@@ -42,8 +42,8 @@ class PayInfoTests {
     @DisplayName("동등성 비교가 가능해야 한다.")
     @Test
     void equalTest() {
-        PayInfo payInfo1 = PayInfo.create(installmentMonths, payAmount, payStatus);
-        PayInfo payInfo2 = PayInfo.create(installmentMonths, payAmount, payStatus);
+        PayInfo payInfo1 = PayInfo.create(installmentMonths, payAmount, payType);
+        PayInfo payInfo2 = PayInfo.create(installmentMonths, payAmount, payType);
         assertThat(payInfo1).isEqualTo(payInfo2);
     }
 }

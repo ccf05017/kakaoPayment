@@ -37,7 +37,7 @@ class PaymentFactoryTests {
         Payment payment = PaymentFactory.createPaymentAutoTax(
                 installmentMonths,
                 payAmount,
-                PayStatus.PAY,
+                PayType.PAY,
                 cardNumber,
                 duration,
                 cvc
@@ -52,7 +52,7 @@ class PaymentFactoryTests {
         Payment payment = PaymentFactory.createPaymentManualTax(
                 installmentMonths,
                 payAmount,
-                PayStatus.PAY,
+                PayType.PAY,
                 cardNumber,
                 duration,
                 cvc,

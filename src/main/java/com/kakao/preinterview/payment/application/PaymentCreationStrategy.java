@@ -1,7 +1,7 @@
 package com.kakao.preinterview.payment.application;
 
 import com.kakao.preinterview.payment.domain.payment.InstallmentMonth;
-import com.kakao.preinterview.payment.domain.payment.PayStatus;
+import com.kakao.preinterview.payment.domain.payment.PayType;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.domain.payment.PaymentFactory;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
@@ -12,7 +12,7 @@ public enum PaymentCreationStrategy {
     PAY_AUTO_TAX((DoPayRequestDto resource) -> PaymentFactory.createPaymentAutoTax(
             InstallmentMonth.createFromMonth(resource.getInstallmentMonth()),
             BigDecimal.valueOf(resource.getPayAmount()),
-            PayStatus.PAY,
+            PayType.PAY,
             resource.getCardNumber(),
             resource.getDuration(),
             resource.getCvc()
@@ -20,7 +20,7 @@ public enum PaymentCreationStrategy {
     PAY_MANUAL_TAX((DoPayRequestDto resource) -> PaymentFactory.createPaymentManualTax(
             InstallmentMonth.createFromMonth(resource.getInstallmentMonth()),
             BigDecimal.valueOf(resource.getPayAmount()),
-            PayStatus.PAY,
+            PayType.PAY,
             resource.getCardNumber(),
             resource.getDuration(),
             resource.getCvc(),

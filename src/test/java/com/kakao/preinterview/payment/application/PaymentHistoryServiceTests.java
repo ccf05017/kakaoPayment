@@ -45,7 +45,7 @@ class PaymentHistoryServiceTests {
 
         GetPayHistoryResponseDto paymentHistoryDto = paymentHistoryService.getPaymentHistory(managementNumber);
         assertThat(paymentHistoryDto.getManagementNumber()).isEqualTo(managementNumber);
-        assertThat(paymentHistoryDto.getStatus()).isEqualTo("PAY");
+        assertThat(paymentHistoryDto.getType()).isEqualTo("PAY");
         assertThat(paymentHistoryDto.getCardInfoData().getCardNumber()).isEqualTo("123456*******456");
         assertThat(paymentHistoryDto.getPayAmount()).isEqualTo(BigDecimal.valueOf(110000));
         assertThat(paymentHistoryDto.getTaxAmount()).isEqualTo(BigDecimal.valueOf(10000));

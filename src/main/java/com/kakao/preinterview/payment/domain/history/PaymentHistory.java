@@ -33,7 +33,7 @@ public class PaymentHistory {
             String installmentMonthFormatMonth,
             BigDecimal payAmount,
             BigDecimal tax,
-            String paymentStatusName,
+            String paymentTypeName,
             boolean canceled
     ) {
         this.id = id;
@@ -43,7 +43,7 @@ public class PaymentHistory {
         this.installmentMonthFormatMonth = installmentMonthFormatMonth;
         this.payAmount = payAmount;
         this.tax = tax;
-        this.paymentStatusName = paymentStatusName;
+        this.paymentStatusName = paymentTypeName;
         this.canceled = canceled;
     }
 
@@ -56,7 +56,7 @@ public class PaymentHistory {
                 payment.getInstallmentMonthFormatMonth(),
                 payment.getPayAmount(),
                 payment.getTaxValue(),
-                payment.getPayStatusName(),
+                payment.getPayTypeName(),
                 !payment.getPayStatusCardCompanyName().equals("PAYMENT")
         );
     }
