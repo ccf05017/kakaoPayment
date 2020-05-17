@@ -94,7 +94,7 @@ public class PaymentFactory {
 
     private static void validateCanceled(PaymentHistory paymentHistory) {
         if (paymentHistory.isCanceled()) throw new TryCancelFromCanceledPaymentException();
-        if (PayType.PAY_CANCEL.getName().equals(paymentHistory.getPaymentStatusName()))
+        if (PayType.PAY_CANCEL.getName().equals(paymentHistory.getPaymentTypeName()))
             throw new TryCancelFromCanceledPaymentException();
     }
 }

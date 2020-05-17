@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
+import com.kakao.preinterview.payment.domain.history.exceptions.PaymentCancelCannotUpdateException;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class PaymentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long revision;
     @Column(unique = true)
     private String managementNumber;
     private String relatedManagementNumber;
@@ -22,11 +24,12 @@ public class PaymentHistory {
     private String installmentMonthFormatMonth;
     private BigDecimal payAmount;
     private BigDecimal tax;
-    private String paymentStatusName;
+    private String paymentTypeName;
     private boolean canceled;
 
     protected PaymentHistory(
             Long id,
+            Long revision,
             String managementNumber,
             String relatedManagementNumber,
             String encryptedCardInfo,
@@ -37,19 +40,21 @@ public class PaymentHistory {
             boolean canceled
     ) {
         this.id = id;
+        this.revision = revision;
         this.managementNumber = managementNumber;
         this.relatedManagementNumber = relatedManagementNumber;
         this.encryptedCardInfo = encryptedCardInfo;
         this.installmentMonthFormatMonth = installmentMonthFormatMonth;
         this.payAmount = payAmount;
         this.tax = tax;
-        this.paymentStatusName = paymentTypeName;
+        this.paymentTypeName = paymentTypeName;
         this.canceled = canceled;
     }
 
     public PaymentHistory(Payment payment, EncryptedCardInfo encryptedCardInfo) {
         this(
                 null,
+                0L,
                 payment.getManagementNumberValue(),
                 payment.getRelatedManagementNumberValue(),
                 encryptedCardInfo.getEncryptedValue(),
@@ -89,16 +94,29 @@ public class PaymentHistory {
         return this.tax;
     }
 
-    public String getPaymentStatusName() {
-        return paymentStatusName;
+    public String getPaymentTypeName() {
+        return paymentTypeName;
     }
 
     public boolean isCanceled() {
         return canceled;
     }
 
+    public Long getRevision() {
+        return revision;
+    }
+
     public void toCanceled() {
         if (this.canceled) throw new DuplicatedCancelException();
         this.canceled = true;
+    }
+
+    public void revisionUp() {
+        revisionValidation();
+        this.revision += 1L;
+    }
+
+    private void revisionValidation() {
+        if (!"PAY".equals(this.paymentTypeName)) throw new PaymentCancelCannotUpdateException();
     }
 }

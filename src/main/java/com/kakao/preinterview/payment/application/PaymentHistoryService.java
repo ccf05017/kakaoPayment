@@ -24,4 +24,11 @@ public class PaymentHistoryService {
 
         return GetPayHistoryResponseDto.create(paymentHistory, cardInfo);
     }
+
+    public PaymentHistory updateRevision(String managementNumber) {
+        PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber)
+                .orElseThrow(NotExistPaymentHistoryException::new);
+        paymentHistory.revisionUp();
+        return paymentHistory;
+    }
 }

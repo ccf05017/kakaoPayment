@@ -30,7 +30,7 @@ class DecryptServiceTests {
     void getCardInfoFromPaymentHistory() throws Exception {
         Payment fakePayment = FakePaymentInfoFactory.createFakePayment();
         CardInfo standard = fakePayment.getCardInfo();
-        PaymentHistory paymentHistory = FakePaymentHistoryFactory.create();
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
 
         CardInfo cardInfo = decryptService.getCardInfoFromPaymentHistory(paymentHistory);
         assertThat(cardInfo.getCardNumber()).isEqualTo(standard.getCardNumber());

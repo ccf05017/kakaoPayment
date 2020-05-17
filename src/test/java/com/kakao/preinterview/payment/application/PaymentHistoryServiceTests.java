@@ -4,6 +4,7 @@ import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHist
 import com.kakao.preinterview.payment.domain.history.FakePaymentHistoryFactory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
+import com.kakao.preinterview.payment.domain.history.exceptions.PaymentCancelCannotUpdateException;
 import com.kakao.preinterview.payment.domain.payment.FakePaymentInfoFactory;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.domain.service.DecryptService;
@@ -37,7 +38,7 @@ class PaymentHistoryServiceTests {
     @Test
     void getPaymentHistory() throws Exception {
         String managementNumber = "XXXXXXXXXXXXXXXXXXXX";
-        PaymentHistory fakePaymentHistory = Optional.of(FakePaymentHistoryFactory.create()).get();
+        PaymentHistory fakePaymentHistory = Optional.of(FakePaymentHistoryFactory.createPaymentHistory()).get();
         Payment fakePayment = FakePaymentInfoFactory.createFakePayment();
         given(paymentHistoryRepository.findByManagementNumber(managementNumber))
                 .willReturn(Optional.of(fakePaymentHistory));
@@ -60,5 +61,40 @@ class PaymentHistoryServiceTests {
 
         assertThatThrownBy(() -> paymentHistoryService.getPaymentHistory(managementNumber))
                 .isInstanceOf(NotExistPaymentHistoryException.class);
+    }
+
+    @DisplayName("존재하는 결제 이력에 대한 revision 업데이트 수행 - 성공")
+    @Test
+    void updateRevision() throws Exception {
+        String managementNumber = "exist";
+        PaymentHistory fakePaymentHistory = Optional.of(FakePaymentHistoryFactory.createPaymentHistory()).get();
+        given(paymentHistoryRepository.findByManagementNumber(managementNumber))
+                .willReturn(Optional.of(fakePaymentHistory));
+
+        PaymentHistory paymentHistory = paymentHistoryService.updateRevision(managementNumber);
+        assertThat(paymentHistory.getRevision()).isEqualTo(1L);
+    }
+
+    @DisplayName("존재하지 않는 결제 이력에 대한 revision 업데이트 수행 - 실패")
+    @Test
+    void updateRevisionFailWithNotExistPaymentHistory() {
+        String managementNumber = "notExist";
+        given(paymentHistoryRepository.findByManagementNumber(managementNumber))
+                .willThrow(new NotExistPaymentHistoryException());
+
+        assertThatThrownBy(() -> paymentHistoryService.updateRevision(managementNumber))
+                .isInstanceOf(NotExistPaymentHistoryException.class);
+    }
+
+    @DisplayName("존재하는 결체취소 이력에 대한 revision 업데이트 수행 - 실패")
+    @Test
+    void updateRevisionFailWithPaymentCancelHistory() throws Exception {
+        String managementNumber = "cancel";
+        PaymentHistory fakePaymentCancelHistory = FakePaymentHistoryFactory.createPaymentCancelHistory();
+        given(paymentHistoryRepository.findByManagementNumber(managementNumber))
+                .willReturn(Optional.of(fakePaymentCancelHistory));
+
+        assertThatThrownBy(() -> paymentHistoryService.updateRevision(managementNumber))
+                .isInstanceOf(PaymentCancelCannotUpdateException.class);
     }
 }

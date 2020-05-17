@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
+import com.kakao.preinterview.payment.domain.history.exceptions.PaymentCancelCannotUpdateException;
 import com.kakao.preinterview.payment.domain.payment.FakePaymentInfoFactory;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,7 @@ class PaymentHistoryTests {
         assertThat(paymentHistory.getEncryptedCardInfo()).isEqualTo(fakeEncryptedCardInfo.getEncryptedValue());
         assertThat(paymentHistory.getInstallmentMonthFormatMonth()).isEqualTo(payment.getInstallmentMonthFormatMonth());
         assertThat(paymentHistory.getPayAmount()).isEqualTo(payment.getPayAmountString());
-        assertThat(paymentHistory.getPaymentStatusName()).isEqualTo(payStatus);
+        assertThat(paymentHistory.getPaymentTypeName()).isEqualTo(payStatus);
         assertThat(paymentHistory.isCanceled()).isEqualTo(isCanceled);
     }
     public static Stream<Arguments> paymentStream() {
@@ -65,5 +66,28 @@ class PaymentHistoryTests {
                 FakePaymentInfoFactory.createFakeCancelPayment(), fakeEncryptedCardInfo
         );
         assertThatThrownBy(() -> paymentHistory.toCanceled()).isInstanceOf(DuplicatedCancelException.class);
+    }
+
+    @DisplayName("결제 건에 대한 revision 증가 시도 시 성공")
+    @Test
+    void revisionUpTest() {
+        PaymentHistory paymentHistory = new PaymentHistory(
+                FakePaymentInfoFactory.createFakePayment(), fakeEncryptedCardInfo
+        );
+        assertThat(paymentHistory.getRevision()).isEqualTo(0);
+
+        paymentHistory.revisionUp();
+        assertThat(paymentHistory.getRevision()).isEqualTo(1);
+    }
+
+    @DisplayName("결제 취소 건에 대한 revision 증가 시도 시 PaymentCancelCannotUpdateException 발생")
+    @Test
+    void revisionUpFailTest() {
+        PaymentHistory paymentHistory = new PaymentHistory(
+                FakePaymentInfoFactory.createFakeCancelPayment(), fakeEncryptedCardInfo
+        );
+        assertThat(paymentHistory.getRevision()).isEqualTo(0);
+
+        assertThatThrownBy(paymentHistory::revisionUp).isInstanceOf(PaymentCancelCannotUpdateException.class);
     }
 }

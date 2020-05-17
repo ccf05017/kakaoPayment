@@ -23,7 +23,7 @@ public class GetPayHistoryResponseDto {
     public static GetPayHistoryResponseDto create(PaymentHistory paymentHistory, CardInfo cardInfo) {
         return GetPayHistoryResponseDto.builder()
                 .managementNumber(paymentHistory.getManagementNumber())
-                .type(paymentHistory.getPaymentStatusName())
+                .type(paymentHistory.getPaymentTypeName())
                 .payAmount(paymentHistory.getPayAmount())
                 .taxAmount(paymentHistory.getTax())
                 .cardInfoData(CardInfoData.builder()
