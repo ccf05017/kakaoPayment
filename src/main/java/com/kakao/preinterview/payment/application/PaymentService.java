@@ -7,6 +7,7 @@ import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
+import com.kakao.preinterview.payment.ui.dto.PayCancelRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,9 @@ public class PaymentService {
         paymentHistoryRepository.save(paymentHistory);
 
         return payment.getManagementNumberValue();
+    }
+
+    public Payment cancelAll(PayCancelRequestDto resource) {
+        return null;
     }
 }
