@@ -71,7 +71,7 @@ class PaymentHistoryServiceTests {
         given(paymentHistoryRepository.findByManagementNumber(managementNumber))
                 .willReturn(Optional.of(fakePaymentHistory));
 
-        PaymentHistory paymentHistory = paymentHistoryService.updateRevision(managementNumber);
+        PaymentHistory paymentHistory = paymentHistoryService.toCancelHistory(managementNumber);
         assertThat(paymentHistory.getRevision()).isEqualTo(1L);
     }
 
@@ -82,7 +82,7 @@ class PaymentHistoryServiceTests {
         given(paymentHistoryRepository.findByManagementNumber(managementNumber))
                 .willThrow(new NotExistPaymentHistoryException());
 
-        assertThatThrownBy(() -> paymentHistoryService.updateRevision(managementNumber))
+        assertThatThrownBy(() -> paymentHistoryService.toCancelHistory(managementNumber))
                 .isInstanceOf(NotExistPaymentHistoryException.class);
     }
 
@@ -94,7 +94,7 @@ class PaymentHistoryServiceTests {
         given(paymentHistoryRepository.findByManagementNumber(managementNumber))
                 .willReturn(Optional.of(fakePaymentCancelHistory));
 
-        assertThatThrownBy(() -> paymentHistoryService.updateRevision(managementNumber))
+        assertThatThrownBy(() -> paymentHistoryService.toCancelHistory(managementNumber))
                 .isInstanceOf(PaymentCancelCannotUpdateException.class);
     }
 }

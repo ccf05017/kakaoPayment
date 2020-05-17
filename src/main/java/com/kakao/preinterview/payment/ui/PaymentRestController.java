@@ -35,7 +35,7 @@ public class PaymentRestController {
     }
 
     @PutMapping("/payments")
-    public PayResponseDto payCancelAll(@Valid @RequestBody PayCancelRequestDto resource) {
+    public PayResponseDto payCancelAll(@Valid @RequestBody PayCancelRequestDto resource) throws Exception {
         Payment paymentCancelAll = paymentService.cancelAll(resource);
 
         return PayResponseDto.builder()

@@ -27,10 +27,11 @@ public class PaymentHistoryService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public PaymentHistory updateRevision(String managementNumber) {
+    public PaymentHistory toCancelHistory(String managementNumber) {
         PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber)
                 .orElseThrow(NotExistPaymentHistoryException::new);
         paymentHistory.revisionUp();
+        paymentHistory.toCanceled();
         return paymentHistory;
     }
 }

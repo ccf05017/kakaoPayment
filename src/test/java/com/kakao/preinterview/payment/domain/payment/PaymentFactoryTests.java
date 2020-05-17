@@ -1,12 +1,16 @@
 package com.kakao.preinterview.payment.domain.payment;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
+import com.kakao.preinterview.payment.domain.history.FakePaymentHistoryFactory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayCancelAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
@@ -69,7 +73,8 @@ class PaymentFactoryTests {
         EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
         PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
 
-        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey");
+        Payment canceledPayment = PaymentFactory.createPaymentCancelAllByAutoTax(
+                paymentHistory, "testKey", paymentHistory.getPayAmount());
 
         assertThat(canceledPayment.getRelatedManagementNumberValue()).isEqualTo(paymentHistory.getManagementNumber());
         assertThat(canceledPayment.getTaxValue()).isEqualTo(paymentHistory.getTax());
@@ -83,7 +88,9 @@ class PaymentFactoryTests {
         PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
         paymentHistory.toCanceled();
 
-        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey"))
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(
+                paymentHistory, "testKey", paymentHistory.getPayAmount())
+        )
                 .isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 
@@ -94,8 +101,22 @@ class PaymentFactoryTests {
         EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(canceledPayment.getCardInfo(), "testKey");
         PaymentHistory paymentHistory = new PaymentHistory(canceledPayment, encryptedCardInfo);
 
-        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(paymentHistory, "testKey"))
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(
+                paymentHistory, "testKey", paymentHistory.getPayAmount())
+        )
                 .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제 History 금액과 일치하지 않는 금액으로 부가가치세 자동계산 결제전액취소 진행 - 실패")
+    @ParameterizedTest
+    @ValueSource(longs = {1, 150000})
+    void createPaymentCancelAllByAutoTaxWithInvalidCancelAmount(long invalidValue) throws Exception {
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        BigDecimal invalidCancelAmount = BigDecimal.valueOf(invalidValue);
+
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByAutoTax(
+                paymentHistory, "testKey", invalidCancelAmount)
+        ).isInstanceOf(InvalidPayCancelAmountException.class);
     }
 
     @DisplayName("결제 History를 기반으로 적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 성공")
@@ -107,7 +128,7 @@ class PaymentFactoryTests {
         BigDecimal requestTaxValue = BigDecimal.valueOf(1);
 
         Payment canceledPayment = PaymentFactory.createPaymentCancelAllByManualTax(
-                paymentHistory, "testKey", requestTaxValue
+                paymentHistory, "testKey", paymentHistory.getPayAmount(), requestTaxValue
         );
 
         assertThat(canceledPayment.getRelatedManagementNumberValue()).isEqualTo(paymentHistory.getManagementNumber());
@@ -124,7 +145,7 @@ class PaymentFactoryTests {
         BigDecimal requestTaxValue = BigDecimal.valueOf(1);
 
         assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
-                paymentHistory, "testKey", requestTaxValue
+                paymentHistory, "testKey", paymentHistory.getPayAmount(), requestTaxValue
         )).isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 
@@ -137,20 +158,33 @@ class PaymentFactoryTests {
         BigDecimal requestTaxValue = BigDecimal.valueOf(1);
 
         assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
-                paymentHistory, "testKey", requestTaxValue
+                paymentHistory, "testKey", paymentHistory.getPayAmount(), requestTaxValue
         )).isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 
-    @DisplayName("결제 History를 기반으로 부적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 성공")
+    @DisplayName("결제 History를 기반으로 부적절한 값의 부가가치세 수동계산 결제전액취소 시도 - 실패")
     @Test
     void createPaymentCancelAllByManualTaxFail() throws Exception {
         Payment payment = FakePaymentInfoFactory.createFakePayment();
         EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
         PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
+        BigDecimal invalidTaxRequestValue = BigDecimal.valueOf(100000);
+
+        assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
+                paymentHistory, "testKey", paymentHistory.getPayAmount(), invalidTaxRequestValue
+        )).isInstanceOf(InvalidTaxAmountException.class);
+    }
+
+    @DisplayName("결제 History 금액과 일치하지 않는 금액으로 부가가치세 수동계산 결제전액취소 진행 - 실패")
+    @ParameterizedTest
+    @ValueSource(longs = {1, 150000})
+    void createPaymentCancelAllByManualTaxWithInvalidCancelAmount(long invalidValue) throws Exception {
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        BigDecimal invalidCancelAmount = BigDecimal.valueOf(invalidValue);
         BigDecimal requestTaxValue = BigDecimal.valueOf(100000);
 
         assertThatThrownBy(() -> PaymentFactory.createPaymentCancelAllByManualTax(
-                paymentHistory, "testKey", requestTaxValue
-        )).isInstanceOf(InvalidTaxAmountException.class);
+                paymentHistory, "testKey", invalidCancelAmount, requestTaxValue)
+        ).isInstanceOf(InvalidPayCancelAmountException.class);
     }
 }
