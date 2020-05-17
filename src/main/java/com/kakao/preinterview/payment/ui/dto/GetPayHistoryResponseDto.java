@@ -16,14 +16,14 @@ import java.math.BigDecimal;
 public class GetPayHistoryResponseDto {
     private String managementNumber;
     private CardInfoData cardInfoData;
-    private String status;
+    private String type;
     private BigDecimal payAmount;
     private BigDecimal taxAmount;
 
     public static GetPayHistoryResponseDto create(PaymentHistory paymentHistory, CardInfo cardInfo) {
         return GetPayHistoryResponseDto.builder()
                 .managementNumber(paymentHistory.getManagementNumber())
-                .status(paymentHistory.getPaymentStatusName())
+                .type(paymentHistory.getPaymentTypeName())
                 .payAmount(paymentHistory.getPayAmount())
                 .taxAmount(paymentHistory.getTax())
                 .cardInfoData(CardInfoData.builder()

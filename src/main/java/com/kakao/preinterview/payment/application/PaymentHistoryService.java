@@ -8,6 +8,7 @@ import com.kakao.preinterview.payment.domain.service.DecryptService;
 import com.kakao.preinterview.payment.ui.dto.GetPayHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -23,5 +24,14 @@ public class PaymentHistoryService {
         CardInfo cardInfo = decryptService.getCardInfoFromPaymentHistory(paymentHistory);
 
         return GetPayHistoryResponseDto.create(paymentHistory, cardInfo);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public PaymentHistory toCancelHistory(String managementNumber) {
+        PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber)
+                .orElseThrow(NotExistPaymentHistoryException::new);
+        paymentHistory.revisionUp();
+        paymentHistory.toCanceled();
+        return paymentHistory;
     }
 }

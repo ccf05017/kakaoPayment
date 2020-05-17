@@ -11,14 +11,14 @@ public class PayInfo {
 
     private InstallmentMonth installmentMonth;
     private BigDecimal payAmount;
-    private PayStatus payStatus;
+    private PayType payType;
 
-    private PayInfo(InstallmentMonth installmentMonth, BigDecimal payAmount, PayStatus payStatus) {
+    private PayInfo(InstallmentMonth installmentMonth, BigDecimal payAmount, PayType payType) {
         validation(payAmount);
 
         this.installmentMonth = installmentMonth;
         this.payAmount = payAmount;
-        this.payStatus = payStatus;
+        this.payType = payType;
     }
 
     private void validation(BigDecimal payAmount) {
@@ -30,8 +30,8 @@ public class PayInfo {
             throw new InvalidPayAmountException();
     }
 
-    public static PayInfo create(InstallmentMonth installmentMonths, BigDecimal payAmount, PayStatus payStatus) {
-        return new PayInfo(installmentMonths, payAmount, payStatus);
+    public static PayInfo create(InstallmentMonth installmentMonths, BigDecimal payAmount, PayType payType) {
+        return new PayInfo(installmentMonths, payAmount, payType);
     }
 
     public InstallmentMonth getInstallmentMonth() {
@@ -42,8 +42,8 @@ public class PayInfo {
         return payAmount;
     }
 
-    public PayStatus getPayStatus() {
-        return payStatus;
+    public PayType getPayType() {
+        return payType;
     }
 
     @Override
@@ -53,11 +53,11 @@ public class PayInfo {
         PayInfo payInfo = (PayInfo) o;
         return Objects.equals(installmentMonth, payInfo.installmentMonth) &&
                 Objects.equals(payAmount, payInfo.payAmount) &&
-                payStatus == payInfo.payStatus;
+                payType == payInfo.payType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(installmentMonth, payAmount, payStatus);
+        return Objects.hash(installmentMonth, payAmount, payType);
     }
 }

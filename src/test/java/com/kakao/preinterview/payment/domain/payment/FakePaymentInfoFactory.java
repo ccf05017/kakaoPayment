@@ -7,8 +7,8 @@ public class FakePaymentInfoFactory {
         ManagementNumber managementNumber = new ManagementNumber("XXXXXXXXXXXXXXXXXXXX");
         InstallmentMonth installmentMonths = InstallmentMonth.LUMPSUM;
         BigDecimal payAmount = BigDecimal.valueOf(110000);
-        PayStatus payStatus = PayStatus.PAY;
-        PayInfo payInfo = PayInfo.create(installmentMonths, payAmount, payStatus);
+        PayType payType = PayType.PAY;
+        PayInfo payInfo = PayInfo.create(installmentMonths, payAmount, payType);
         Long cardNumber = 1234567890123456L;
         String duration = "1125";
         Integer cvc = 777;
@@ -31,8 +31,8 @@ public class FakePaymentInfoFactory {
         ManagementNumber relatedManagementNumber = new ManagementNumber("XXXXXXXXXXXXXXXXXXXX");
         InstallmentMonth installmentMonths = InstallmentMonth.LUMPSUM;
         BigDecimal payAmount = BigDecimal.valueOf(110000);
-        PayStatus payStatus = PayStatus.PAY_CANCEL;
-        PayInfo payInfo = PayInfo.create(installmentMonths, payAmount, payStatus);
+        PayType payType = PayType.PAY_CANCEL;
+        PayInfo payInfo = PayInfo.create(installmentMonths, payAmount, payType);
         Long cardNumber = 1234567890123456L;
         String duration = "1125";
         Integer cvc = 777;

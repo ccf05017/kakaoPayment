@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoPayResponseDto {
+public class PayResponseDto {
     private String managementNumber;
 }

@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.domain.payment;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
+import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayCancelAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
 
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ public class PaymentFactory {
     public static Payment createPaymentAutoTax(
             InstallmentMonth installmentMonths,
             BigDecimal payAmount,
-            PayStatus payStatus,
+            PayType payType,
             Long cardNumber,
             String duration,
             Integer cvc
@@ -20,7 +21,7 @@ public class PaymentFactory {
         return new Payment(
                 ManagementNumber.create(),
                 null,
-                PayInfo.create(installmentMonths, payAmount, payStatus),
+                PayInfo.create(installmentMonths, payAmount, payType),
                 cardInfo,
                 Tax.autoCreate(payAmount)
         );
@@ -29,7 +30,7 @@ public class PaymentFactory {
     public static Payment createPaymentManualTax(
             InstallmentMonth installmentMonths,
             BigDecimal payAmount,
-            PayStatus payStatus,
+            PayType payType,
             Long cardNumber,
             String duration,
             Integer cvc,
@@ -40,14 +41,17 @@ public class PaymentFactory {
         return new Payment(
                 ManagementNumber.create(),
                 null,
-                PayInfo.create(installmentMonths, payAmount, payStatus),
+                PayInfo.create(installmentMonths, payAmount, payType),
                 cardInfo,
                 Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount)
         );
     }
 
-    public static Payment createPaymentCancelAllByAutoTax(PaymentHistory paymentHistory, String key) throws Exception {
+    public static Payment createPaymentCancelAllByAutoTax(
+            PaymentHistory paymentHistory, String key, BigDecimal cancelAmount
+    ) throws Exception {
         validateCanceled(paymentHistory);
+        validateCancelAmount(paymentHistory.getPayAmount(), cancelAmount);
 
         return new Payment(
                 ManagementNumber.create(),
@@ -55,7 +59,7 @@ public class PaymentFactory {
                 PayInfo.create(
                         InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonthFormatMonth()),
                         paymentHistory.getPayAmount(),
-                        PayStatus.PAY_CANCEL
+                        PayType.PAY_CANCEL
                 ),
                 CardInfo.createFromDecryptedRawString(
                         getDecryptedRawCardInfoFromPaymentHistory(paymentHistory, key)
@@ -67,9 +71,11 @@ public class PaymentFactory {
     public static Payment createPaymentCancelAllByManualTax(
             PaymentHistory paymentHistory,
             String key,
+            BigDecimal cancelAmount,
             BigDecimal taxValue
     ) throws Exception {
         validateCanceled(paymentHistory);
+        validateCancelAmount(paymentHistory.getPayAmount(), cancelAmount);
 
         return new Payment(
                 ManagementNumber.create(),
@@ -77,7 +83,7 @@ public class PaymentFactory {
                 PayInfo.create(
                         InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonthFormatMonth()),
                         paymentHistory.getPayAmount(),
-                        PayStatus.PAY_CANCEL
+                        PayType.PAY_CANCEL
                 ),
                 CardInfo.createFromDecryptedRawString(
                         getDecryptedRawCardInfoFromPaymentHistory(paymentHistory, key)
@@ -94,7 +100,11 @@ public class PaymentFactory {
 
     private static void validateCanceled(PaymentHistory paymentHistory) {
         if (paymentHistory.isCanceled()) throw new TryCancelFromCanceledPaymentException();
-        if (PayStatus.PAY_CANCEL.getName().equals(paymentHistory.getPaymentStatusName()))
+        if (PayType.PAY_CANCEL.getName().equals(paymentHistory.getPaymentTypeName()))
             throw new TryCancelFromCanceledPaymentException();
+    }
+
+    private static void validateCancelAmount(BigDecimal payAmount, BigDecimal cancelAmount) {
+        if (payAmount.compareTo(cancelAmount) != 0) throw new InvalidPayCancelAmountException();
     }
 }

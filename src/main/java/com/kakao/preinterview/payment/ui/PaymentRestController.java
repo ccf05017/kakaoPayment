@@ -1,11 +1,14 @@
 package com.kakao.preinterview.payment.ui;
 
 import com.kakao.preinterview.payment.application.PaymentService;
+import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
-import com.kakao.preinterview.payment.ui.dto.DoPayResponseDto;
+import com.kakao.preinterview.payment.ui.dto.PayCancelRequestDto;
+import com.kakao.preinterview.payment.ui.dto.PayResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +21,7 @@ public class PaymentRestController {
     private final PaymentService paymentService;
 
     @PostMapping("/payments")
-    public ResponseEntity<DoPayResponseDto> doPayment(
+    public ResponseEntity<PayResponseDto> doPayment(
             @Valid @RequestBody DoPayRequestDto resource
     ) throws Exception {
         String managementNumber = paymentService.doPay(resource);
@@ -26,8 +29,17 @@ public class PaymentRestController {
 
         return ResponseEntity
                 .created(new URI(url))
-                .body(DoPayResponseDto.builder()
+                .body(PayResponseDto.builder()
                         .managementNumber(managementNumber)
                         .build());
+    }
+
+    @PutMapping("/payments")
+    public PayResponseDto payCancelAll(@Valid @RequestBody PayCancelRequestDto resource) throws Exception {
+        Payment paymentCancelAll = paymentService.cancelAll(resource);
+
+        return PayResponseDto.builder()
+                .managementNumber(paymentCancelAll.getManagementNumberValue())
+                .build();
     }
 }

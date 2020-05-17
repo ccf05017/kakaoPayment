@@ -56,7 +56,7 @@ public class Payment {
     }
 
     public String getPayStatusCardCompanyName() {
-        return this.payInfo.getPayStatus().getCardCompanyName();
+        return this.payInfo.getPayType().getCardCompanyName();
     }
 
     private Integer getCvc() {
@@ -92,8 +92,8 @@ public class Payment {
         return this.getTaxValue().toString();
     }
 
-    public String getPayStatusName() {
-        return this.payInfo.getPayStatus().getName();
+    public String getPayTypeName() {
+        return this.payInfo.getPayType().getName();
     }
 
     protected PayInfo getPayInfo() {

@@ -47,7 +47,7 @@ class PaymentHistoryRestControllerTests {
                         .duration("1125")
                         .cvc(777)
                         .build())
-                .status("PAY")
+                .type("PAY")
                 .payAmount(BigDecimal.valueOf(110000))
                 .taxAmount(BigDecimal.valueOf(10000))
                 .build();
@@ -59,7 +59,7 @@ class PaymentHistoryRestControllerTests {
                 .andExpect(jsonPath("$.cardInfoData.cardNumber", is("123456*******456")))
                 .andExpect(jsonPath("$.cardInfoData.duration", is("1125")))
                 .andExpect(jsonPath("$.cardInfoData.cvc", is(777)))
-                .andExpect(jsonPath("$.status", is("PAY")))
+                .andExpect(jsonPath("$.type", is("PAY")))
                 .andExpect(jsonPath("$.payAmount", is(110000)))
                 .andExpect(jsonPath("$.taxAmount", is(10000)))
         ;
