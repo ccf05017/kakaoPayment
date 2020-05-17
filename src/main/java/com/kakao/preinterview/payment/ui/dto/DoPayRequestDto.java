@@ -13,9 +13,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoPayRequestDto {
-    @NotEmpty
     @NotNull
-    private String cardNumber;
+    private Long cardNumber;
     @NotEmpty
     @NotNull
     private String duration;

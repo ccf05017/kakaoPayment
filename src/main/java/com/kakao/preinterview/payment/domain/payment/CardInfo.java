@@ -42,16 +42,16 @@ public class CardInfo {
     private void cardNumberValidation(long cardNumber) {
         int cardNumberSize = (int)(Math.log10(cardNumber) + 1);
         if (cardNumberSize < MIN_CARD_NUMBER_LENGTH || cardNumberSize > MAX_CARD_NUMBER_LENGTH)
-            throw new InvalidCardInfoParamException("CardNumber");
+            throw new InvalidCardInfoParamException("Invalid Card Number");
     }
 
     private void durationValidation(String duration) {
-        if (duration.length() != DURATION_LENGTH) throw new InvalidCardInfoParamException("Duration");
+        if (duration.length() != DURATION_LENGTH) throw new InvalidCardInfoParamException("Invalid Duration");
     }
 
     private void cvcValidation(int cvc) {
         int cvcSize = (int)(Math.log10(cvc) + 1);
-        if (cvcSize != CVC_LENGTH) throw new InvalidCardInfoParamException("Cvc");
+        if (cvcSize != CVC_LENGTH) throw new InvalidCardInfoParamException("Invalid CVC");
     }
 
     public static CardInfo create(long cardNumber, String duration, int cvc) {

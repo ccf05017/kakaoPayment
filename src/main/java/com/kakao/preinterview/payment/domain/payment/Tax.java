@@ -23,9 +23,9 @@ public class Tax {
     }
 
     private static void manualValidation(BigDecimal value, BigDecimal payAmount) {
-        if (value == null || payAmount == null) throw new IllegalArgumentException();
-        if (BigDecimal.ZERO.compareTo(value) > 0) throw new IllegalArgumentException();
-        if (payAmount.compareTo(value) < 0) throw new IllegalArgumentException();
+        if (value == null || payAmount == null) throw new InvalidTaxAmountException();
+        if (BigDecimal.ZERO.compareTo(value) > 0) throw new InvalidTaxAmountException();
+        if (payAmount.compareTo(value) < 0) throw new InvalidTaxAmountException();
     }
 
     public static Tax autoCreate(BigDecimal payAmount) {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class PaymentRestController {
     @PostMapping("/payments")
     public ResponseEntity<DoPayResponseDto> doPayment(
             @Valid @RequestBody DoPayRequestDto resource
-    ) throws URISyntaxException {
+    ) throws Exception {
         String managementNumber = paymentService.doPay(resource);
         String url = "/payments/" + managementNumber;
 
