@@ -2,6 +2,7 @@ package com.kakao.preinterview.payment.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.preinterview.payment.application.PaymentService;
+import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidCardInfoParamException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
@@ -202,5 +203,15 @@ class PaymentRestControllerTests {
                 .andExpect(jsonPath("$.payAmount", is(110000)))
                 .andExpect(jsonPath("$.taxAmount", is(10000)))
         ;
+    }
+
+    @DisplayName("존재하지 않는 결제 내역 조회 시 실패(404)")
+    @Test
+    void getPaymentFail() throws Exception {
+        String managementNumber = "notExist";
+        given(paymentService.getPaymentHistory(managementNumber)).willThrow(new NotExistPaymentHistoryException());
+
+        mockMvc.perform(get("/payments/" + managementNumber))
+                .andExpect(status().isNotFound());
     }
 }
