@@ -39,7 +39,7 @@ Content-Type: application/json
   "tax": 10000
 }
 
-### 잘못된 유효기간
+### 잘못된 유효기간1 (자리수가 맞지 않음)
 
 POST http://localhost:8080/payments
 Content-Type: application/json
@@ -47,6 +47,20 @@ Content-Type: application/json
 {
   "cardNumber": 1234567890123456,
   "duration": "125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 유효기간2 (숫자와 문자열이 섞여있음)
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1a2d",
   "cvc": 777,
   "installmentMonth": 0,
   "payAmount": 110000,

@@ -47,6 +47,11 @@ public class CardInfo {
 
     private void durationValidation(String duration) {
         if (duration.length() != DURATION_LENGTH) throw new InvalidCardInfoParamException("Invalid Duration");
+        try{
+            duration.chars().mapToObj(a -> (char) a).forEach(a -> Integer.parseInt(a.toString()));
+        } catch (Exception e) {
+            throw new InvalidCardInfoParamException("Invalid Duration");
+        }
     }
 
     private void cvcValidation(int cvc) {
