@@ -1,0 +1,126 @@
+### 세금 자동 계산
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 14000000
+}
+
+### 세금 수동 계산
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 카드 번호
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 12345,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 유효기간1 (자리수가 맞지 않음)
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 유효기간2 (숫자와 문자열이 섞여있음)
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1a2d",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 CVC
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 772227,
+  "installmentMonth": 0,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 할부기간
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": -1,
+  "payAmount": 110000,
+  "tax": 10000
+}
+
+### 잘못된 결제 금액
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 110000000000000,
+  "tax": 10000
+}
+
+### Tax Validation 제대로 안 이루어짐
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 130000,
+  "tax": 10000000000000
+}
+
+###

@@ -35,6 +35,13 @@ public enum InstallmentMonth {
         return result.orElseThrow(NotExistInstallmentFormatMonth::new);
     }
 
+    public static InstallmentMonth createFromMonth(int month) {
+        Optional<InstallmentMonth> result = Arrays.asList(InstallmentMonth.values())
+                .stream().filter(installmentMonth -> installmentMonth.getMonth() == month)
+                .findFirst();
+        return result.orElseThrow(NotExistInstallmentFormatMonth::new);
+    }
+
     public int getMonth() {
         return month;
     }

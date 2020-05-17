@@ -39,6 +39,8 @@ class CardInfoTests {
                 // invalid duration
                 Arguments.of(12345678901L, "12345", 123),
                 Arguments.of(12345678901L, "12", 123),
+                Arguments.of(12345678901L, "abcd", 123),
+                Arguments.of(12345678901L, "1b2d", 123),
                 // invalid cvc
                 Arguments.of(12345678901L, "1224", 12),
                 Arguments.of(12345678901L, "1224", 1234)

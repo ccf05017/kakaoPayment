@@ -29,7 +29,7 @@ class TaxTests {
     @MethodSource("invalidValues")
     void createValidationTest(BigDecimal invalidValues) {
         assertThatThrownBy(() -> Tax.manualCreate(invalidValues, payAmount))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidTaxAmountException.class);
     }
     public static Stream<BigDecimal> invalidValues() {
         return Stream.of(
