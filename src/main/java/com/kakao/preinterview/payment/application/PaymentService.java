@@ -11,6 +11,7 @@ import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.domain.payment.PaymentFactory;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ import java.math.BigDecimal;
 public class PaymentService {
     private final CardCompanyInfoRepository cardCompanyInfoRepository;
     private final PaymentHistoryRepository paymentHistoryRepository;
+
+    @Value("${encryption.key}")
+    private String key;
 
     public String doPay(DoPayRequestDto resource) throws Exception {
         Payment payment;
@@ -46,7 +50,7 @@ public class PaymentService {
                     resource.getCvc()
             );
         }
-        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), "testKey");
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(payment.getCardInfo(), key);
         CardCompanyInfo cardCompanyInfo = CardCompanyInfo.createCardCompanyInfo(payment, encryptedCardInfo);
         PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
 
