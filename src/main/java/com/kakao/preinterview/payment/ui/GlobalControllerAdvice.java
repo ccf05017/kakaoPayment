@@ -1,5 +1,6 @@
 package com.kakao.preinterview.payment.ui;
 
+import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidCardInfoParamException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
@@ -38,5 +39,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(InvalidTaxAmountException.class)
     public String handleInvalidTaxAmountException() {
         return "Invalid Tax Amount";
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotExistPaymentHistoryException.class)
+    public String handleNotExistPaymentHistoryException() {
+        return "Not Exist Such PaymentHistory Data";
     }
 }
