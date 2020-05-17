@@ -2,17 +2,13 @@ package com.kakao.preinterview.payment.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.preinterview.payment.application.PaymentService;
-import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidCardInfoParamException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.NotExistInstallmentFormatMonth;
-import com.kakao.preinterview.payment.ui.dto.CardInfoData;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
-import com.kakao.preinterview.payment.ui.dto.GetPayResponseDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,14 +20,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -174,44 +168,5 @@ class PaymentRestControllerTests {
                         "Invalid Tax Amount"
                 )
         );
-    }
-
-    @DisplayName("존재하는 관리번호로 결제내역 조회 시 성공(200)")
-    @Test
-    void getPaymentTest() throws Exception {
-        String managementNumber = "exist";
-        GetPayResponseDto fakeGetPayResponseDto = GetPayResponseDto.builder()
-                .managementNumber("exist")
-                .cardInfoData(CardInfoData.builder()
-                        .cardNumber("123456*******456")
-                        .duration("1125")
-                        .cvc(777)
-                        .build())
-                .canceled(false)
-                .payAmount(BigDecimal.valueOf(110000))
-                .taxAmount(BigDecimal.valueOf(10000))
-                .build();
-        given(paymentService.getPaymentHistory(managementNumber)).willReturn(fakeGetPayResponseDto);
-
-        mockMvc.perform(get("/payments/" + managementNumber))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.managementNumber", is("exist")))
-                .andExpect(jsonPath("$.cardInfoData.cardNumber", is("123456*******456")))
-                .andExpect(jsonPath("$.cardInfoData.duration", is("1125")))
-                .andExpect(jsonPath("$.cardInfoData.cvc", is(777)))
-                .andExpect(jsonPath("$.canceled", is(false)))
-                .andExpect(jsonPath("$.payAmount", is(110000)))
-                .andExpect(jsonPath("$.taxAmount", is(10000)))
-        ;
-    }
-
-    @DisplayName("존재하지 않는 결제 내역 조회 시 실패(404)")
-    @Test
-    void getPaymentFail() throws Exception {
-        String managementNumber = "notExist";
-        given(paymentService.getPaymentHistory(managementNumber)).willThrow(new NotExistPaymentHistoryException());
-
-        mockMvc.perform(get("/payments/" + managementNumber))
-                .andExpect(status().isNotFound());
     }
 }
