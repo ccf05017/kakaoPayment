@@ -6,10 +6,7 @@ import com.kakao.preinterview.payment.domain.payment.Payment;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -18,6 +15,7 @@ public class PaymentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String managementNumber;
     private String relatedManagementNumber;
     private String encryptedCardInfo;

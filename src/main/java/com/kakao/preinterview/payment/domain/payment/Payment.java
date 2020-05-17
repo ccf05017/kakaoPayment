@@ -95,4 +95,8 @@ public class Payment {
     public String getPayStatusName() {
         return this.payInfo.getPayStatus().getName();
     }
+
+    protected PayInfo getPayInfo() {
+        return this.payInfo;
+    }
 }

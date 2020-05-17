@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PaymentService {
     private final CardCompanyInfoRepository cardCompanyInfoRepository;
@@ -22,6 +21,7 @@ public class PaymentService {
     @Value("${encryption.key}")
     private String key;
 
+    @Transactional
     public String doPay(DoPayRequestDto resource) throws Exception {
         PaymentCreationStrategy paymentCreationStrategy = PaymentCreationStrategy.select(resource);
         Payment payment = paymentCreationStrategy.create(resource);
