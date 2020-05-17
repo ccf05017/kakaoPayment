@@ -2,16 +2,18 @@ package com.kakao.preinterview.payment.application;
 
 import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
 import com.kakao.preinterview.payment.domain.history.FakePaymentHistoryFactory;
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
+import com.kakao.preinterview.payment.domain.payment.FakePaymentInfoFactory;
+import com.kakao.preinterview.payment.domain.payment.Payment;
+import com.kakao.preinterview.payment.domain.service.DecryptService;
 import com.kakao.preinterview.payment.ui.dto.GetPayHistoryResponseDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -28,17 +30,18 @@ class PaymentHistoryServiceTests {
     @Mock
     private PaymentHistoryRepository paymentHistoryRepository;
 
-    @BeforeEach
-    public void setup() {
-        ReflectionTestUtils.setField(paymentHistoryService, "key", "testKey");
-    }
+    @Mock
+    private DecryptService decryptService;
 
     @DisplayName("존재하는 결제 이력을 조회해서 GetPayHistoryResponseDto로 변환 성공")
     @Test
     void getPaymentHistory() throws Exception {
         String managementNumber = "XXXXXXXXXXXXXXXXXXXX";
+        PaymentHistory fakePaymentHistory = Optional.of(FakePaymentHistoryFactory.create()).get();
+        Payment fakePayment = FakePaymentInfoFactory.createFakePayment();
         given(paymentHistoryRepository.findByManagementNumber(managementNumber))
-                .willReturn(Optional.of(FakePaymentHistoryFactory.create()));
+                .willReturn(Optional.of(fakePaymentHistory));
+        given(decryptService.getCardInfoFromPaymentHistory(fakePaymentHistory)).willReturn(fakePayment.getCardInfo());
 
         GetPayHistoryResponseDto paymentHistoryDto = paymentHistoryService.getPaymentHistory(managementNumber);
         assertThat(paymentHistoryDto.getManagementNumber()).isEqualTo(managementNumber);

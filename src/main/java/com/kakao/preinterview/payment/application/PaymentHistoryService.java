@@ -1,14 +1,13 @@
 package com.kakao.preinterview.payment.application;
 
 import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
-import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
 import com.kakao.preinterview.payment.domain.payment.CardInfo;
+import com.kakao.preinterview.payment.domain.service.DecryptService;
 import com.kakao.preinterview.payment.ui.dto.CardInfoData;
 import com.kakao.preinterview.payment.ui.dto.GetPayHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentHistoryService {
     private final PaymentHistoryRepository paymentHistoryRepository;
-
-    @Value("${encryption.key}")
-    private String key;
+    private final DecryptService decryptService;
 
     @Transactional
     public GetPayHistoryResponseDto getPaymentHistory(String managementNumber) throws Exception {
         PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber)
                 .orElseThrow(NotExistPaymentHistoryException::new);
-        String decryptedCardData = EncryptedCardInfo.decryptFromRawData(paymentHistory.getEncryptedCardInfo(), key);
-        CardInfo cardInfo = CardInfo.createFromDecryptedRawString(decryptedCardData);
-        String cardNumberString = cardInfo.getCardNumber().toString();
+        CardInfo cardInfo = decryptService.getCardInfoFromPaymentHistory(paymentHistory);
 
         return GetPayHistoryResponseDto.builder()
                 .managementNumber(paymentHistory.getManagementNumber())
@@ -34,7 +29,7 @@ public class PaymentHistoryService {
                 .payAmount(paymentHistory.getPayAmount())
                 .taxAmount(paymentHistory.getTax())
                 .cardInfoData(CardInfoData.builder()
-                        .cardNumber(cardNumberBlocker(cardNumberString))
+                        .cardNumber(cardNumberBlocker(cardInfo.getCardNumber().toString()))
                         .duration(cardInfo.getDuration())
                         .cvc(cardInfo.getCvc())
                         .build())

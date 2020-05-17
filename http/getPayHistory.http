@@ -1,0 +1,7 @@
+GET http://localhost:8080/paymentHistories/
+
+###
+
+GET http://localhost:8080/paymentHistories/b558520ea05b4a029391
+
+###
