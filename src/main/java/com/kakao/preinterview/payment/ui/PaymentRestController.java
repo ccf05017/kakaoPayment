@@ -3,11 +3,10 @@ package com.kakao.preinterview.payment.ui;
 import com.kakao.preinterview.payment.application.PaymentService;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
 import com.kakao.preinterview.payment.ui.dto.DoPayResponseDto;
+import com.kakao.preinterview.payment.ui.dto.GetPayResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -16,6 +15,11 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class PaymentRestController {
     private final PaymentService paymentService;
+
+    @GetMapping("/payments/{managementNumber}")
+    public GetPayResponseDto getPayment(@PathVariable String managementNumber) {
+        return paymentService.getPaymentHistory(managementNumber);
+    }
 
     @PostMapping("/payments")
     public ResponseEntity<DoPayResponseDto> doPayment(
