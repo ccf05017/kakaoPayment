@@ -32,8 +32,8 @@ public class CardCompanyInfo {
                 + CardCompanyDataParser.parse(2, payment.getInstallmentMonthFormatMonth(), "nr")
                 + CardCompanyDataParser.parse(4, payment.getDuration(), "nl")
                 + CardCompanyDataParser.parse(3, payment.getCvcString(), "nl")
-                + CardCompanyDataParser.parse(10, payment.getPayAmountString(), "nd")
-                + CardCompanyDataParser.parse(10, payment.getTaxValueString(), "nr")
+                + CardCompanyDataParser.parse(10, payment.getPayAmountFormatString(), "nd")
+                + CardCompanyDataParser.parse(10, payment.getTaxAmountFormatString(), "nr")
                 + CardCompanyDataParser.parse(20, payment.getRelatedManagementNumberValue(), "sl")
                 + CardCompanyDataParser.parse(300, encryptedValue.getEncryptedValue(), "sl")
                 + CardCompanyDataParser.parse(47, "", "sl");
@@ -46,6 +46,8 @@ public class CardCompanyInfo {
     }
 
     protected void validateStringDataLength(String cardCompanyStringData) {
+        System.out.println(cardCompanyStringData.length());
+        System.out.println(cardCompanyStringData);
         if (cardCompanyStringData.length() != 450) throw new ParseToCardCompanyDataException();
     }
 

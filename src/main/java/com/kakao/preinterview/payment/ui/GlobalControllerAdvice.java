@@ -1,6 +1,7 @@
 package com.kakao.preinterview.payment.ui;
 
 import com.kakao.preinterview.payment.application.exceptions.NotExistPaymentHistoryException;
+import com.kakao.preinterview.payment.domain.parser.exceptions.CardCompanyDataParsingException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -57,5 +58,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(TryCancelFromCanceledPaymentException.class)
     public String handleTryCancelFromCanceledPaymentException() {
         return "Already Canceled";
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(CardCompanyDataParsingException.class)
+    public String handleCardCompanyDataParsingException(CardCompanyDataParsingException exception) {
+        return exception.getMessage();
     }
 }

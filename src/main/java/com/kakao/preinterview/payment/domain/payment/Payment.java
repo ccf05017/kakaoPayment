@@ -1,6 +1,7 @@
 package com.kakao.preinterview.payment.domain.payment;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 public class Payment {
     private ManagementNumber managementNumber;
@@ -88,8 +89,18 @@ public class Payment {
         return this.getPayAmount().toString();
     }
 
+    public String getPayAmountFormatString() {
+        DecimalFormat format = new DecimalFormat("0");
+        return format.format(this.getPayAmount());
+    }
+
     public String getTaxValueString() {
         return this.getTaxValue().toString();
+    }
+
+    public String getTaxAmountFormatString() {
+        DecimalFormat format = new DecimalFormat("0");
+        return format.format(this.getTaxValue());
     }
 
     public String getPayTypeName() {
