@@ -55,7 +55,8 @@ class PaymentRestControllerTests {
     @ParameterizedTest
     @MethodSource("validRequestDtos")
     void doPayTaxAutoTest(DoPayRequestDto validRequestDto) throws Exception {
-        given(paymentService.doPay(any(DoPayRequestDto.class))).willReturn("XXXXXXXXXXXXXXXXXXXX");
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        given(paymentService.doPay(any(DoPayRequestDto.class))).willReturn(paymentHistory);
 
         mockMvc.perform(post("/payments")
                 .contentType(MediaType.APPLICATION_JSON)

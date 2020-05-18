@@ -32,7 +32,7 @@ public class PaymentService {
     private String key;
 
     @Transactional
-    public String doPay(DoPayRequestDto resource) throws Exception {
+    public PaymentHistory doPay(DoPayRequestDto resource) throws Exception {
         PaymentCreationStrategy paymentCreationStrategy = PaymentCreationStrategy.select(resource);
         Payment payment = paymentCreationStrategy.create(resource);
 
@@ -41,9 +41,9 @@ public class PaymentService {
         PaymentHistory paymentHistory = new PaymentHistory(payment, encryptedCardInfo);
 
         cardCompanyInfoRepository.save(cardCompanyInfo);
-        paymentHistoryRepository.save(paymentHistory);
+        PaymentHistory savedPaymentHistory = paymentHistoryRepository.save(paymentHistory);
 
-        return payment.getManagementNumberValue();
+        return savedPaymentHistory;
     }
 
     @Transactional

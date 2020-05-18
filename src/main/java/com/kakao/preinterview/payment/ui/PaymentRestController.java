@@ -22,13 +22,13 @@ public class PaymentRestController {
     public ResponseEntity<PayResponseDto> doPayment(
             @Valid @RequestBody DoPayRequestDto resource
     ) throws Exception {
-        String managementNumber = paymentService.doPay(resource);
-        String url = "/payments/" + managementNumber;
+        PaymentHistory paymentHistory = paymentService.doPay(resource);
+        String url = "/payments/" + paymentHistory.getManagementNumber();
 
         return ResponseEntity
                 .created(new URI(url))
                 .body(PayResponseDto.builder()
-                        .managementNumber(managementNumber)
+                        .managementNumber(paymentHistory.getManagementNumber())
                         .build());
     }
 
