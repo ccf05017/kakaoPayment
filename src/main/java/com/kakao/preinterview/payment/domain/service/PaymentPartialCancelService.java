@@ -37,10 +37,29 @@ public class PaymentPartialCancelService {
     }
 
     public Payment doByManualTax(PaymentHistory paymentHistory, String key, PayCancelRequestDto resource,
-                                 BigDecimal amountRemainSum, BigDecimal taxRemainSum) {
+                                 BigDecimal amountRemainSum, BigDecimal taxRemainSum) throws Exception {
         paymentHistoryPayAmountValidation(resource.getCancelAmount(), paymentHistory.getPayAmount());
         paymentHistoryPayRemainValidation(resource.getCancelAmount(), amountRemainSum);
-        return null;
+
+        if (isFinalPartialCancel(resource.getCancelAmount(), amountRemainSum)) {
+            paymentPartialCancelFinalManualTaxValidation(resource.getTax(), taxRemainSum);
+        }
+
+        paymentPartialCancelManualTaxValidation(resource.getTax(), taxRemainSum);
+
+        return new Payment(
+                ManagementNumber.create(),
+                ManagementNumber.createFromPaymentHistory(paymentHistory),
+                PayInfo.create(
+                        InstallmentMonth.LUMPSUM,
+                        resource.getCancelAmount(),
+                        PayType.PAY_PARTIAL_CANCEL
+                ),
+                CardInfo.createFromDecryptedRawString(
+                        getDecryptedRawCardInfoFromPaymentHistory(paymentHistory, key)
+                ),
+                Tax.manualCreate(resource.getTax(), resource.getCancelAmount())
+        );
     }
 
     protected boolean isFinalPartialCancel(BigDecimal requestValue, BigDecimal remainSum) {
@@ -58,6 +77,14 @@ public class PaymentPartialCancelService {
     protected void paymentPartialCancelFinalAutoTaxValidation(PayCancelRequestDto resource, BigDecimal taxRemainSum) {
         Tax autoCreatedTax = Tax.autoCreate(resource.getCancelAmount());
         if (autoCreatedTax.getValue().compareTo(taxRemainSum) < 0) throw new InvalidTaxAmountException();
+    }
+
+    protected void paymentPartialCancelFinalManualTaxValidation(BigDecimal manualTax, BigDecimal taxRemainSum) {
+        if (manualTax.compareTo(taxRemainSum) != 0) throw new InvalidTaxAmountException();
+    }
+
+    protected void paymentPartialCancelManualTaxValidation(BigDecimal manualTax, BigDecimal taxRemainSum) {
+        if (manualTax.compareTo(taxRemainSum) > 0) throw new InvalidTaxAmountException();
     }
 
     private static String getDecryptedRawCardInfoFromPaymentHistory(

@@ -119,4 +119,95 @@ class PaymentPartialCancelServiceTests {
         assertThat(partialCancelPayment.getRelatedManagementNumberValue()).isEqualTo("XXXXXXXXXXXXXXXXXXXX");
         assertThat(partialCancelPayment.getTaxValue()).isEqualTo(taxRemainSum);
     }
+
+    @DisplayName("부가가치세 자동계산으로 결제부분취소 진행")
+    @Test
+    void partialCancelAutoTaxSuccess() throws Exception {
+        BigDecimal cancelRequestAmount = BigDecimal.valueOf(11000);
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        PayCancelRequestDto validPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .cancelAmount(cancelRequestAmount)
+                .build();
+        BigDecimal amountRemainSum = BigDecimal.valueOf(110000);
+        BigDecimal taxRemainSum = BigDecimal.valueOf(1000);
+
+        assertThat(Tax.autoCreate(cancelRequestAmount).getValue().compareTo(taxRemainSum) == 0).isTrue();
+
+        Payment partialCancelPayment = paymentPartialCancelService.doByAutoTax(
+                paymentHistory, "testKey", validPartialCancelRequestDto, amountRemainSum, taxRemainSum);
+        assertThat(partialCancelPayment.getPayTypeName()).isEqualTo("PAY_PARTIAL_CANCEL");
+        assertThat(partialCancelPayment.getRelatedManagementNumberValue()).isEqualTo("XXXXXXXXXXXXXXXXXXXX");
+        assertThat(partialCancelPayment.getTaxValue()).isEqualTo(taxRemainSum);
+    }
+
+    @DisplayName("부가가치세 수동계산으로 결제부분취소 진행 중 " +
+            "수동계산 부가가치세 금액이 결제이력 부가가치세 잔액과 일치하지 않는 경우 InvalidTaxAmountException 발생")
+    @Test
+    void partialCancelFinalManualTaxFailWithInvalidTaxAmount() throws Exception {
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        PayCancelRequestDto invalidPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .cancelAmount(BigDecimal.valueOf(1100))
+                .tax(BigDecimal.valueOf(100))
+                .build();
+        BigDecimal amountRemainSum = BigDecimal.valueOf(1100);
+        BigDecimal taxRemainSum = BigDecimal.valueOf(1000);
+
+        assertThatThrownBy(() -> paymentPartialCancelService.doByManualTax(
+                paymentHistory, "testKey", invalidPartialCancelRequestDto, amountRemainSum, taxRemainSum))
+                .isInstanceOf(InvalidTaxAmountException.class);
+    }
+
+    @DisplayName("부가가치세 수동계산으로 결제부분취소 최종 취소 진행 성공(수동계산 부가가치세금액 = 결제이력 부가가치세 잔액)")
+    @Test
+    void partialCancelFinalManualTaxSuccess() throws Exception {
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        PayCancelRequestDto validPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .cancelAmount(BigDecimal.valueOf(1100))
+                .tax(BigDecimal.valueOf(100))
+                .build();
+        BigDecimal amountRemainSum = BigDecimal.valueOf(1100);
+        BigDecimal taxRemainSum = BigDecimal.valueOf(100);
+
+        Payment partialCancelPayment = paymentPartialCancelService.doByManualTax(
+                paymentHistory, "testKey", validPartialCancelRequestDto, amountRemainSum, taxRemainSum);
+        assertThat(partialCancelPayment.getPayTypeName()).isEqualTo("PAY_PARTIAL_CANCEL");
+        assertThat(partialCancelPayment.getRelatedManagementNumberValue()).isEqualTo("XXXXXXXXXXXXXXXXXXXX");
+        assertThat(partialCancelPayment.getTaxValue()).isEqualTo(BigDecimal.valueOf(100));
+    }
+
+    @DisplayName("부가가치세 수동계산으로 결제부분취소 진행 중 " +
+            "부가가치세 요청 금액이 결제이력 부가가치세 잔액보다 큰 경우 InvalidTaxAmountException 발생")
+    @Test
+    void partialCancelManualTaxFailWithBiggerRequestTaxAmount() throws Exception {
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        PayCancelRequestDto invalidPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .cancelAmount(BigDecimal.valueOf(1100))
+                .tax(BigDecimal.valueOf(100))
+                .build();
+        BigDecimal amountRemainSum = BigDecimal.valueOf(1100);
+        BigDecimal taxRemainSum = BigDecimal.valueOf(10);
+
+        assertThatThrownBy(() -> paymentPartialCancelService.doByManualTax(
+                paymentHistory, "testKey", invalidPartialCancelRequestDto, amountRemainSum, taxRemainSum))
+                .isInstanceOf(InvalidTaxAmountException.class);
+    }
+
+    @DisplayName("부가가치세 수동계산으로 결제부분취소 성공")
+    @ParameterizedTest
+    @ValueSource(longs = {100, 1000})
+    void partialCancelManualTaxSuccess(long remainValue) throws Exception {
+        PaymentHistory paymentHistory = FakePaymentHistoryFactory.createPaymentHistory();
+        PayCancelRequestDto validPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .cancelAmount(BigDecimal.valueOf(1100))
+                .tax(BigDecimal.valueOf(100))
+                .build();
+        BigDecimal amountRemainSum = BigDecimal.valueOf(11000);
+        BigDecimal taxRemainSum = BigDecimal.valueOf(remainValue);
+
+        Payment partialCancelPayment = paymentPartialCancelService.doByManualTax(
+                paymentHistory, "testKey", validPartialCancelRequestDto, amountRemainSum, taxRemainSum);
+        assertThat(partialCancelPayment.getPayTypeName()).isEqualTo("PAY_PARTIAL_CANCEL");
+        assertThat(partialCancelPayment.getRelatedManagementNumberValue()).isEqualTo("XXXXXXXXXXXXXXXXXXXX");
+        assertThat(partialCancelPayment.getTaxValue()).isEqualTo(BigDecimal.valueOf(100));
+    }
 }
