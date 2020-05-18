@@ -2,7 +2,7 @@ PUT http://localhost:8080/payments
 Content-Type: application/json
 
 {
-  "managementNumber": "1082fbb3cc974065b461",
+  "managementNumber": "e2a518516638445da33c",
   "cancelAmount": 14000000
 }
 
