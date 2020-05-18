@@ -10,6 +10,7 @@ import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayCancelAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
+import com.kakao.preinterview.payment.domain.service.PaymentPartialCancelService;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
 import com.kakao.preinterview.payment.ui.dto.PayCancelRequestDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,8 @@ class PaymentServiceTests {
     private PaymentHistoryRepository paymentHistoryRepository;
     @Mock
     private PaymentHistoryService paymentHistoryService;
+    @Mock
+    private PaymentPartialCancelService paymentPartialCancelService;
 
     @BeforeEach
     public void setup() {
@@ -180,5 +183,11 @@ class PaymentServiceTests {
 
         assertThatThrownBy(() -> paymentService.cancelAll(resource))
                 .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("올바른 정보로 결제부분취소 진행 가능")
+    @Test
+    void payCancelPartialTest() throws Exception {
+        // TODO: 도메인 구현 후 다시 구현
     }
 }

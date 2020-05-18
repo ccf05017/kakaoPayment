@@ -57,7 +57,7 @@ public class PaymentFactory {
                 ManagementNumber.create(),
                 ManagementNumber.createFromPaymentHistory(paymentHistory),
                 PayInfo.create(
-                        InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonthFormatMonth()),
+                        InstallmentMonth.LUMPSUM,
                         paymentHistory.getPayAmount(),
                         PayType.PAY_CANCEL
                 ),
@@ -81,7 +81,7 @@ public class PaymentFactory {
                 ManagementNumber.create(),
                 ManagementNumber.createFromPaymentHistory(paymentHistory),
                 PayInfo.create(
-                        InstallmentMonth.createFromFormatMonth(paymentHistory.getInstallmentMonthFormatMonth()),
+                        InstallmentMonth.LUMPSUM,
                         paymentHistory.getPayAmount(),
                         PayType.PAY_CANCEL
                 ),

@@ -10,7 +10,7 @@ public class Payment {
     private CardInfo cardInfo;
     private Tax tax;
 
-    protected Payment(
+    public Payment(
             ManagementNumber managementNumber,
             ManagementNumber relatedManagementNumber,
             PayInfo payInfo,

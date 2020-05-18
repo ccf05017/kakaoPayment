@@ -42,7 +42,7 @@ public class PaymentRestController {
     }
 
     @PatchMapping("/payments")
-    public PayResponseDto payCancelPartial(@Valid @RequestBody PayCancelRequestDto resource) {
+    public PayResponseDto payCancelPartial(@Valid @RequestBody PayCancelRequestDto resource) throws Exception {
         PaymentHistory paymentCancelPartialHistory = paymentService.cancelPartial(resource);
 
         return PayResponseDto.builder()
