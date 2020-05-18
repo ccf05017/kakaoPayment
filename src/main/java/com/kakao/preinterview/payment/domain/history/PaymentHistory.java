@@ -1,7 +1,6 @@
 package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
-import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
 import com.kakao.preinterview.payment.domain.history.exceptions.PaymentCancelCannotUpdateException;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import lombok.AccessLevel;
@@ -107,7 +106,6 @@ public class PaymentHistory {
     }
 
     public void toCanceled() {
-        if (this.canceled) throw new DuplicatedCancelException();
         this.canceled = true;
     }
 

@@ -185,9 +185,35 @@ class PaymentServiceTests {
                 .isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 
-    @DisplayName("올바른 정보로 결제부분취소 진행 가능")
+    @DisplayName("이미 결제전액취소 된 결제 이력에 대해 결제부분취소 시도 시 TryCancelFromCanceledPaymentException")
     @Test
-    void payCancelPartialTest() throws Exception {
-        // TODO: 도메인 구현 후 다시 구현
+    void payCancelPartialFailWithAlreadyCanceledTest() throws Exception {
+        PayCancelRequestDto resource = PayCancelRequestDto.builder()
+                .managementNumber("alreadyCanceled")
+                .cancelAmount(BigDecimal.ONE)
+                .build();
+
+        given(paymentHistoryRepository.findByManagementNumber(resource.getManagementNumber()))
+                .willReturn(Optional.of(FakePaymentHistoryFactory.createPaymentCancelHistory()));
+        given(paymentHistoryRepository.countAllByRelatedManagementNumberAndPaymentTypeName(
+                resource.getManagementNumber(), "PAY_CANCEL")).willReturn(1L);
+
+        assertThatThrownBy(() -> paymentService.cancelPartial(resource))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제 취소 이력에 결제부분취소 시도 시 TryCancelFromCanceledPaymentException")
+    @Test
+    void payCancelPartialFailToPaymentCancelHistoryTest() throws Exception {
+        PayCancelRequestDto resource = PayCancelRequestDto.builder()
+                .managementNumber("toCancelHistory")
+                .cancelAmount(BigDecimal.ONE)
+                .build();
+
+        given(paymentHistoryRepository.findByManagementNumber(resource.getManagementNumber()))
+                .willReturn(Optional.of(FakePaymentHistoryFactory.createPaymentCancelHistory()));
+
+        assertThatThrownBy(() -> paymentService.cancelPartial(resource))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 }

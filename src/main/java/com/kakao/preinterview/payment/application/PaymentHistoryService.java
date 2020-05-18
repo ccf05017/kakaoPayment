@@ -34,12 +34,4 @@ public class PaymentHistoryService {
         paymentHistory.toCanceled();
         return paymentHistory;
     }
-
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public PaymentHistory upRevision(String managementNumber) {
-        PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(managementNumber)
-                .orElseThrow(NotExistPaymentHistoryException::new);
-        paymentHistory.revisionUp();
-        return paymentHistory;
-    }
 }

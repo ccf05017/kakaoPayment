@@ -12,11 +12,19 @@ import java.math.BigDecimal;
 
 @Component
 public class PaymentPartialCancelService {
-    public Payment doByAutoTax(PaymentHistory paymentHistory, String key, PayCancelRequestDto resource,
-                               BigDecimal amountRemainSum, BigDecimal taxRemainSum) throws Exception {
+    public Payment doPartialCancel(PaymentHistory paymentHistory, String key, PayCancelRequestDto resource,
+                                   BigDecimal amountRemainSum, BigDecimal taxRemainSum) throws Exception {
         paymentHistoryPayAmountValidation(resource.getCancelAmount(), paymentHistory.getPayAmount());
         paymentHistoryPayRemainValidation(resource.getCancelAmount(), amountRemainSum);
 
+        if (resource.getTax() == null) {
+            return doByAutoTax(paymentHistory, key, resource, amountRemainSum, taxRemainSum);
+        }
+        return doByManualTax(paymentHistory, key, resource, amountRemainSum, taxRemainSum);
+    }
+
+    protected Payment doByAutoTax(PaymentHistory paymentHistory, String key, PayCancelRequestDto resource,
+                               BigDecimal amountRemainSum, BigDecimal taxRemainSum) throws Exception {
         if (isFinalPartialCancel(resource.getCancelAmount(), amountRemainSum)) {
             paymentPartialCancelFinalAutoTaxValidation(resource, taxRemainSum);
         }
@@ -36,11 +44,8 @@ public class PaymentPartialCancelService {
         );
     }
 
-    public Payment doByManualTax(PaymentHistory paymentHistory, String key, PayCancelRequestDto resource,
+    protected Payment doByManualTax(PaymentHistory paymentHistory, String key, PayCancelRequestDto resource,
                                  BigDecimal amountRemainSum, BigDecimal taxRemainSum) throws Exception {
-        paymentHistoryPayAmountValidation(resource.getCancelAmount(), paymentHistory.getPayAmount());
-        paymentHistoryPayRemainValidation(resource.getCancelAmount(), amountRemainSum);
-
         if (isFinalPartialCancel(resource.getCancelAmount(), amountRemainSum)) {
             paymentPartialCancelFinalManualTaxValidation(resource.getTax(), taxRemainSum);
         }
@@ -63,7 +68,7 @@ public class PaymentPartialCancelService {
     }
 
     protected boolean isFinalPartialCancel(BigDecimal requestValue, BigDecimal remainSum) {
-        return remainSum.equals(requestValue);
+        return (remainSum.compareTo(requestValue) == 0);
     }
 
     protected void paymentHistoryPayAmountValidation(BigDecimal requestValue, BigDecimal paymentHistoryPayAmount) {

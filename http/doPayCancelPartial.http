@@ -1,0 +1,106 @@
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "739bae5fc8e6422cbf7c",
+  "cancelAmount": 1100,
+  "tax": 100
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "739bae5fc8e6422cbf7c",
+  "cancelAmount": 3300
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "739bae5fc8e6422cbf7c",
+  "cancelAmount": 7000
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "739bae5fc8e6422cbf7c",
+  "cancelAmount": 6600,
+  "tax": 700
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "739bae5fc8e6422cbf7c",
+  "cancelAmount": 6600,
+  "tax": 600
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "739bae5fc8e6422cbf7c",
+  "cancelAmount": 100
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "defea05c54e845e9be43",
+  "cancelAmount": 10000,
+  "tax": 0
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "5be68e61c3c2453796d7",
+  "cancelAmount": 10000,
+  "tax": 1000
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "5be68e61c3c2453796d7",
+  "cancelAmount": 10000,
+  "tax": 909
+}
+
+###
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "5be68e61c3c2453796d7",
+  "cancelAmount": 10000
+}
+
+###
+

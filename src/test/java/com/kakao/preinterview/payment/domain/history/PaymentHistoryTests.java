@@ -1,7 +1,6 @@
 package com.kakao.preinterview.payment.domain.history;
 
 import com.kakao.preinterview.payment.domain.encrypt.EncryptedCardInfo;
-import com.kakao.preinterview.payment.domain.history.exceptions.DuplicatedCancelException;
 import com.kakao.preinterview.payment.domain.history.exceptions.PaymentCancelCannotUpdateException;
 import com.kakao.preinterview.payment.domain.payment.FakePaymentInfoFactory;
 import com.kakao.preinterview.payment.domain.payment.Payment;
@@ -57,15 +56,6 @@ class PaymentHistoryTests {
 
         paymentHistory.toCanceled();
         assertThat(paymentHistory.isCanceled()).isEqualTo(true);
-    }
-
-    @DisplayName("취소 여부가 true인 PaymentHistory 객체의 취소 여부 상태를 바꿀 수 없다.")
-    @Test
-    void changeCanceledFail() {
-        PaymentHistory paymentHistory = new PaymentHistory(
-                FakePaymentInfoFactory.createFakeCancelPayment(), fakeEncryptedCardInfo
-        );
-        assertThatThrownBy(() -> paymentHistory.toCanceled()).isInstanceOf(DuplicatedCancelException.class);
     }
 
     @DisplayName("결제 건에 대한 revision 증가 시도 시 성공")

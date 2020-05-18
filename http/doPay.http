@@ -8,7 +8,7 @@ Content-Type: application/json
   "duration": "1125",
   "cvc": 777,
   "installmentMonth": 0,
-  "payAmount": 14000000
+  "payAmount": 20000
 }
 
 ### 세금 수동 계산
@@ -21,8 +21,8 @@ Content-Type: application/json
   "duration": "1125",
   "cvc": 777,
   "installmentMonth": 0,
-  "payAmount": 110000,
-  "tax": 10000
+  "payAmount": 20000,
+  "tax": 909
 }
 
 ### 잘못된 카드 번호
