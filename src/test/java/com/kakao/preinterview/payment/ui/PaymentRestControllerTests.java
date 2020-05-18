@@ -309,7 +309,7 @@ class PaymentRestControllerTests {
         mockMvc.perform(put("/payments")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(invalidCancelRequestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Already Canceled")));
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString("Already Canceled")));
     }
 }
