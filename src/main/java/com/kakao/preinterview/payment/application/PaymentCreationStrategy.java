@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public enum PaymentCreationStrategy {
     PAY_AUTO_TAX((DoPayRequestDto resource) -> PaymentFactory.createPaymentAutoTax(
             InstallmentMonth.createFromMonth(resource.getInstallmentMonth()),
-            BigDecimal.valueOf(resource.getPayAmount()),
+            resource.getPayAmount(),
             PayType.PAY,
             resource.getCardNumber(),
             resource.getDuration(),
@@ -19,7 +19,7 @@ public enum PaymentCreationStrategy {
     )),
     PAY_MANUAL_TAX((DoPayRequestDto resource) -> PaymentFactory.createPaymentManualTax(
             InstallmentMonth.createFromMonth(resource.getInstallmentMonth()),
-            BigDecimal.valueOf(resource.getPayAmount()),
+            resource.getPayAmount(),
             PayType.PAY,
             resource.getCardNumber(),
             resource.getDuration(),

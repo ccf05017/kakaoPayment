@@ -46,8 +46,6 @@ public class CardCompanyInfo {
     }
 
     protected void validateStringDataLength(String cardCompanyStringData) {
-        System.out.println(cardCompanyStringData.length());
-        System.out.println(cardCompanyStringData);
         if (cardCompanyStringData.length() != 450) throw new ParseToCardCompanyDataException();
     }
 

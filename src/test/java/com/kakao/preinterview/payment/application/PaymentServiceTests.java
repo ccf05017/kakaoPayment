@@ -6,7 +6,6 @@ import com.kakao.preinterview.payment.domain.cardcompany.CardCompanyInfoReposito
 import com.kakao.preinterview.payment.domain.history.FakePaymentHistoryFactory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.history.PaymentHistoryRepository;
-import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayCancelAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
@@ -55,7 +54,7 @@ class PaymentServiceTests {
     @Test
     void doPaySuccess() throws Exception {
         DoPayRequestDto validDoPayRequestDto = DoPayRequestDto.builder().cardNumber(1234567890123456L)
-                .duration("1125").cvc(777).installmentMonth(0).payAmount(110000L).build();
+                .duration("1125").cvc(777).installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build();
 
         paymentService.doPay(validDoPayRequestDto);
 
@@ -74,11 +73,13 @@ class PaymentServiceTests {
 
         given(paymentHistoryRepository.findByManagementNumber(resource.getManagementNumber()))
                 .willReturn(Optional.of(paymentHistory));
+        given(paymentHistoryRepository.save(any(PaymentHistory.class)))
+                .willReturn(FakePaymentHistoryFactory.createPaymentCancelHistory());
 
-        Payment paymentCancel = paymentService.cancelAll(resource);
+        PaymentHistory paymentCancelAllHistory = paymentService.cancelAll(resource);
 
-        assertThat(paymentCancel.getTaxValue()).isEqualTo(paymentHistory.getTax());
-        assertThat(paymentCancel.getPayTypeName()).isEqualTo("PAY_CANCEL");
+        assertThat(paymentCancelAllHistory.getTax()).isEqualTo(paymentHistory.getTax());
+        assertThat(paymentCancelAllHistory.getPaymentTypeName()).isEqualTo("PAY_CANCEL");
         verify(paymentHistoryService).toCancelHistory(paymentHistory.getManagementNumber());
         verify(paymentHistoryRepository).save(any());
         verify(cardCompanyInfoRepository).save(any());

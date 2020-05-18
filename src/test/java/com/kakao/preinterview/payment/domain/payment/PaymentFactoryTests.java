@@ -23,7 +23,7 @@ class PaymentFactoryTests {
     private Long cardNumber;
     private String duration;
     private Integer cvc;
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @BeforeEach
     public void setup() {
@@ -32,7 +32,7 @@ class PaymentFactoryTests {
         cardNumber = 1111222233334444L;
         duration = "1231";
         cvc = 123;
-        taxAmount = 150L;
+        taxAmount = BigDecimal.valueOf(150);
     }
 
     @DisplayName("부가가치세 자동계산 결제 객체 생성")
@@ -63,7 +63,7 @@ class PaymentFactoryTests {
                 taxAmount
         );
         assertThat(payment).isNotNull();
-        assertThat(payment.getTax()).isEqualTo(Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount));
+        assertThat(payment.getTax()).isEqualTo(Tax.manualCreate(taxAmount, payAmount));
     }
 
     @DisplayName("결제 History를 기반으로 부가가치세 자동계산 결제전액취소 진행 - 성공")
