@@ -4,13 +4,12 @@ import com.kakao.preinterview.payment.domain.parser.exceptions.CardCompanyDataPa
 
 public class CardCompanyDataParser {
     public static String parse(int limit, String data, String parseType) {
+        validateParseDataLength(data, limit);
         ParserType parserType = ParserType.create(parseType);
-        String parsedString = parserType.parse(limit, data);
-        validateParseDataLength(parsedString, limit);
         return parserType.parse(limit, data);
     }
 
-    private static void validateParseDataLength(String parsedString, int limit) {
-        if (parsedString.length() > limit) new CardCompanyDataParsingException(parsedString);
+    private static void validateParseDataLength(String data, int limit) {
+        if (data.length() > limit) new CardCompanyDataParsingException(data);
     }
 }
