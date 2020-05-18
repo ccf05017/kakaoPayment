@@ -90,8 +90,8 @@
     - 이력에서는 실행된 당시의 상태만을 기억하기 때문에 그 당시 상태보다 결제된 형식이 더 맞는 이름이라 판된되어 변경
     
 - [ ] 결제 기능 리팩토링
-    - [ ] Request DTO에서 결제액 BigDecimal 타입으로 변경
-    - [ ] Request DTO에서 부가가치세 BigDecimal 타입으로 변경
+    - [X] Request DTO에서 결제액 BigDecimal 타입으로 변경
+    - [X] Request DTO에서 부가가치세 BigDecimal 타입으로 변경
     - [ ] 서비스 레이어에서 Payment 객체 리턴하도록 변경
     
 - [X] 결제 전체 취소 기능

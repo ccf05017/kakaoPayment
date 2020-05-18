@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -23,6 +24,6 @@ public class DoPayRequestDto {
     @NotNull
     private Integer installmentMonth;
     @NotNull
-    private Long payAmount;
-    private Long tax;
+    private BigDecimal payAmount;
+    private BigDecimal tax;
 }

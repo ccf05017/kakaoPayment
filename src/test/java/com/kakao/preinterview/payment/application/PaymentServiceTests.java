@@ -55,7 +55,7 @@ class PaymentServiceTests {
     @Test
     void doPaySuccess() throws Exception {
         DoPayRequestDto validDoPayRequestDto = DoPayRequestDto.builder().cardNumber(1234567890123456L)
-                .duration("1125").cvc(777).installmentMonth(0).payAmount(110000L).build();
+                .duration("1125").cvc(777).installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build();
 
         paymentService.doPay(validDoPayRequestDto);
 

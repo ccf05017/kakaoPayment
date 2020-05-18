@@ -69,9 +69,9 @@ class PaymentRestControllerTests {
     public static Stream<DoPayRequestDto> validRequestDtos() {
         return Stream.of(
                 DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777).installmentMonth(0)
-                        .payAmount(110000L).build(),
+                        .payAmount(BigDecimal.valueOf(110000)).build(),
                 DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777).installmentMonth(0)
-                        .payAmount(110000L).tax(20L).build()
+                        .payAmount(BigDecimal.valueOf(110000)).tax(BigDecimal.valueOf(20)).build()
         );
     }
 
@@ -99,13 +99,13 @@ class PaymentRestControllerTests {
                 // Invalid CardNumber
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234L).duration("1125").cvc(777).installmentMonth(0)
-                                .payAmount(110000L).build(),
+                                .payAmount(BigDecimal.valueOf(110000)).build(),
                         new InvalidCardInfoParamException("CardNumber"),
                         "CardNumber"
                 ),
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234123412341234123L).duration("1125").cvc(777)
-                                .installmentMonth(0).payAmount(110000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build(),
                         new InvalidCardInfoParamException("CardNumber"),
                         "CardNumber"
                 ),
@@ -113,13 +113,13 @@ class PaymentRestControllerTests {
                 // Invalid Duration
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("112512").cvc(777)
-                                .installmentMonth(0).payAmount(110000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build(),
                         new InvalidCardInfoParamException("Duration"),
                         "Duration"
                 ),
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1").cvc(777)
-                                .installmentMonth(0).payAmount(110000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build(),
                         new InvalidCardInfoParamException("Duration"),
                         "Duration"
                 ),
@@ -127,13 +127,13 @@ class PaymentRestControllerTests {
                 // Invalid Cvc
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(7)
-                                .installmentMonth(0).payAmount(110000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build(),
                         new InvalidCardInfoParamException("Cvc"),
                         "Cvc"
                 ),
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(71235)
-                                .installmentMonth(0).payAmount(110000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(110000)).build(),
                         new InvalidCardInfoParamException("Cvc"),
                         "Cvc"
                 ),
@@ -141,13 +141,13 @@ class PaymentRestControllerTests {
                 // Invalid InstallmentMonth
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777)
-                                .installmentMonth(-1).payAmount(110000L).build(),
+                                .installmentMonth(-1).payAmount(BigDecimal.valueOf(110000)).build(),
                         new NotExistInstallmentFormatMonth(),
                         "Invalid Installment Month"
                 ),
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777)
-                                .installmentMonth(13).payAmount(110000L).build(),
+                                .installmentMonth(13).payAmount(BigDecimal.valueOf(110000)).build(),
                         new NotExistInstallmentFormatMonth(),
                         "Invalid Installment Month"
                 ),
@@ -155,13 +155,13 @@ class PaymentRestControllerTests {
                 // Invalid PayAmount
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777)
-                                .installmentMonth(0).payAmount(1L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(1)).build(),
                         new InvalidPayAmountException(),
                         "Invalid Pay Amount"
                 ),
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777)
-                                .installmentMonth(0).payAmount(100000000000000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(100000000000000L)).build(),
                         new InvalidPayAmountException(),
                         "Invalid Pay Amount"
                 ),
@@ -169,7 +169,8 @@ class PaymentRestControllerTests {
                 // Invalid TaxAmount
                 Arguments.of(
                         DoPayRequestDto.builder().cardNumber(1234567890123456L).duration("1125").cvc(777)
-                                .installmentMonth(0).payAmount(100000L).tax(10000000000L).build(),
+                                .installmentMonth(0).payAmount(BigDecimal.valueOf(100000L))
+                                .tax(BigDecimal.valueOf(10000000000L)).build(),
                         new InvalidTaxAmountException(),
                         "Invalid Tax Amount"
                 )

@@ -34,7 +34,7 @@ public class PaymentFactory {
             Long cardNumber,
             String duration,
             Integer cvc,
-            Long taxAmount
+            BigDecimal taxAmount
     ) {
         CardInfo cardInfo = CardInfo.create(cardNumber, duration, cvc);
 
@@ -43,7 +43,7 @@ public class PaymentFactory {
                 null,
                 PayInfo.create(installmentMonths, payAmount, payType),
                 cardInfo,
-                Tax.manualCreate(BigDecimal.valueOf(taxAmount), payAmount)
+                Tax.manualCreate(taxAmount, payAmount)
         );
     }
 
