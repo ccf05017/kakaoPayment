@@ -10,6 +10,7 @@ import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidPayCancelAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.InvalidTaxAmountException;
 import com.kakao.preinterview.payment.domain.payment.exceptions.TryCancelFromCanceledPaymentException;
+import com.kakao.preinterview.payment.domain.service.PaymentPartialCancelService;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
 import com.kakao.preinterview.payment.ui.dto.PayCancelRequestDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,8 @@ class PaymentServiceTests {
     private PaymentHistoryRepository paymentHistoryRepository;
     @Mock
     private PaymentHistoryService paymentHistoryService;
+    @Mock
+    private PaymentPartialCancelService paymentPartialCancelService;
 
     @BeforeEach
     public void setup() {
@@ -179,6 +182,38 @@ class PaymentServiceTests {
                 .willReturn(Optional.of(paymentCancelHistory));
 
         assertThatThrownBy(() -> paymentService.cancelAll(resource))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("이미 결제전액취소 된 결제 이력에 대해 결제부분취소 시도 시 TryCancelFromCanceledPaymentException")
+    @Test
+    void payCancelPartialFailWithAlreadyCanceledTest() throws Exception {
+        PayCancelRequestDto resource = PayCancelRequestDto.builder()
+                .managementNumber("alreadyCanceled")
+                .cancelAmount(BigDecimal.ONE)
+                .build();
+
+        given(paymentHistoryRepository.findByManagementNumber(resource.getManagementNumber()))
+                .willReturn(Optional.of(FakePaymentHistoryFactory.createPaymentCancelHistory()));
+        given(paymentHistoryRepository.countAllByRelatedManagementNumberAndPaymentTypeName(
+                resource.getManagementNumber(), "PAY_CANCEL")).willReturn(1L);
+
+        assertThatThrownBy(() -> paymentService.cancelPartial(resource))
+                .isInstanceOf(TryCancelFromCanceledPaymentException.class);
+    }
+
+    @DisplayName("결제 취소 이력에 결제부분취소 시도 시 TryCancelFromCanceledPaymentException")
+    @Test
+    void payCancelPartialFailToPaymentCancelHistoryTest() throws Exception {
+        PayCancelRequestDto resource = PayCancelRequestDto.builder()
+                .managementNumber("toCancelHistory")
+                .cancelAmount(BigDecimal.ONE)
+                .build();
+
+        given(paymentHistoryRepository.findByManagementNumber(resource.getManagementNumber()))
+                .willReturn(Optional.of(FakePaymentHistoryFactory.createPaymentCancelHistory()));
+
+        assertThatThrownBy(() -> paymentService.cancelPartial(resource))
                 .isInstanceOf(TryCancelFromCanceledPaymentException.class);
     }
 }

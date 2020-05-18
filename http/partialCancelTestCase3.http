@@ -1,0 +1,46 @@
+### 결제
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 20000
+}
+
+### 성공
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "3dd5e86e939b4c0e9408",
+  "cancelAmount": 10000,
+  "tax": 1000
+}
+
+### 실패
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "3dd5e86e939b4c0e9408",
+  "cancelAmount": 10000,
+  "tax": 909
+}
+
+### 성공
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "3dd5e86e939b4c0e9408",
+  "cancelAmount": 10000
+}
+
+###

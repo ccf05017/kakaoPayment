@@ -18,4 +18,11 @@ public class FakePaymentHistoryFactory {
 
         return new PaymentHistory(fakePayment, encryptedCardInfo);
     }
+
+    public static PaymentHistory createPaymentCancelPartialHistory() throws Exception {
+        Payment fakePayment = FakePaymentInfoFactory.createFakePartialCancelPayment();
+        EncryptedCardInfo encryptedCardInfo = EncryptedCardInfo.create(fakePayment.getCardInfo(), "testKey");
+
+        return new PaymentHistory(fakePayment, encryptedCardInfo);
+    }
 }

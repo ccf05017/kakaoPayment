@@ -1,0 +1,78 @@
+### 결제
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "cardNumber": 1234567890123456,
+  "duration": "1125",
+  "cvc": 777,
+  "installmentMonth": 0,
+  "payAmount": 11000,
+  "tax": 1000
+}
+
+### 성공
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+"managementNumber": "f800f2f4cde841e38d97",
+"cancelAmount": 1100,
+"tax": 100
+}
+
+### 성공
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "f800f2f4cde841e38d97",
+  "cancelAmount": 3300
+}
+
+### 실패
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "f800f2f4cde841e38d97",
+  "cancelAmount": 7000
+}
+
+### 실패
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "f800f2f4cde841e38d97",
+  "cancelAmount": 6600,
+  "tax": 700
+}
+
+### 성공
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "f800f2f4cde841e38d97",
+  "cancelAmount": 6600,
+  "tax": 600
+}
+
+### 실패
+
+PATCH http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "managementNumber": "f800f2f4cde841e38d97",
+  "cancelAmount": 100
+}
+
+###
