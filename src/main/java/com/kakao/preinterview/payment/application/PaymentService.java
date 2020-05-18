@@ -55,4 +55,8 @@ public class PaymentService {
 
         return paymentCancel;
     }
+
+    public PaymentHistory cancelPartial(PayCancelRequestDto resource) {
+        return null;
+    }
 }

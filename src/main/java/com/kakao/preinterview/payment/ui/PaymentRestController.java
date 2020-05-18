@@ -1,6 +1,7 @@
 package com.kakao.preinterview.payment.ui;
 
 import com.kakao.preinterview.payment.application.PaymentService;
+import com.kakao.preinterview.payment.domain.history.PaymentHistory;
 import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
 import com.kakao.preinterview.payment.ui.dto.PayCancelRequestDto;
@@ -37,6 +38,15 @@ public class PaymentRestController {
 
         return PayResponseDto.builder()
                 .managementNumber(paymentCancelAll.getManagementNumberValue())
+                .build();
+    }
+
+    @PatchMapping("/payments")
+    public PayResponseDto payCancelPartial(@Valid @RequestBody PayCancelRequestDto resource) {
+        PaymentHistory paymentCancelPartialHistory = paymentService.cancelPartial(resource);
+
+        return PayResponseDto.builder()
+                .managementNumber(paymentCancelPartialHistory.getManagementNumber())
                 .build();
     }
 }

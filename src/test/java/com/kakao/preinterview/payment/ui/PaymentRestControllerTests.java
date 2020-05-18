@@ -32,8 +32,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -293,7 +292,7 @@ class PaymentRestControllerTests {
                 .andExpect(content().string(containsString("Already Canceled")));
     }
 
-    @DisplayName("결제 취소 이력에 대해 결제전액취도 시도 - 실패(400)")
+    @DisplayName("결제 취소 이력에 대해 결제전액취소 시도 - 실패(400)")
     @Test
     void paymentCancelAllFailToPaymentCancelHistory() throws Exception {
         PaymentHistory paymentCancelHistory = FakePaymentHistoryFactory.createPaymentCancelHistory();
@@ -311,5 +310,97 @@ class PaymentRestControllerTests {
                 .content(objectMapper.writeValueAsBytes(invalidCancelRequestDto)))
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string(containsString("Already Canceled")));
+    }
+
+    @DisplayName("결제전액취소 된 결제 이력에 대해 결제부분취소 시도 - 실패(400)")
+    @Test
+    void paymentCancelPartialFailToCanceledPaymentHistory() throws Exception {
+        PayCancelRequestDto invalidPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .managementNumber("alreadyCanceledPaymentHistory")
+                .cancelAmount(BigDecimal.valueOf(3))
+                .build();
+
+        given(paymentService.cancelPartial(invalidPartialCancelRequestDto))
+                .willThrow(new TryCancelFromCanceledPaymentException());
+
+        mockMvc.perform(patch("/payments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(invalidPartialCancelRequestDto)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString("Already Canceled")));
+    }
+
+    @DisplayName("결제취소이력(부분취소, 전액취소) 이력에 대해 결제부분취소 시도 - 실패(400)")
+    @Test
+    void paymentCancelPartialFailToPaymentCancelHistory() throws Exception {
+        PayCancelRequestDto invalidPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .managementNumber("alreadyCanceledPaymentHistory")
+                .cancelAmount(BigDecimal.valueOf(3))
+                .build();
+
+        given(paymentService.cancelPartial(invalidPartialCancelRequestDto))
+                .willThrow(new TryCancelFromCanceledPaymentException());
+
+        mockMvc.perform(patch("/payments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(invalidPartialCancelRequestDto)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString("Already Canceled")));
+    }
+
+    @DisplayName("잘못된 요청 금액으로 결제부분취소(요청 금액 >= 결제이력 금액, 요청 금액 > 결제이력 잔액) 시도 시 - 실패(400)")
+    @Test
+    void paymentCancelPartialFailWithTooBigRequestAmountThanOriginal() throws Exception {
+        PayCancelRequestDto invalidPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .managementNumber("alreadyCanceledPaymentHistory")
+                .cancelAmount(BigDecimal.valueOf(3))
+                .build();
+
+        given(paymentService.cancelPartial(invalidPartialCancelRequestDto))
+                .willThrow(new InvalidPayCancelAmountException());
+
+        mockMvc.perform(patch("/payments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(invalidPartialCancelRequestDto)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString("Invalid Payment Cancel Amount")));
+    }
+
+    @DisplayName("잘못된 세금 계산액으로 결제부분취소 시도 시 - 실패(400)")
+    @Test
+    void paymentCancelPartialFailWithInvalidTaxAmount() throws Exception {
+        PayCancelRequestDto invalidPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .managementNumber("alreadyCanceledPaymentHistory")
+                .cancelAmount(BigDecimal.valueOf(3))
+                .build();
+
+        given(paymentService.cancelPartial(invalidPartialCancelRequestDto))
+                .willThrow(new InvalidTaxAmountException());
+
+        mockMvc.perform(patch("/payments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(invalidPartialCancelRequestDto)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString("Invalid Tax Amount")));
+    }
+
+    @DisplayName("적절한 세금 계산액으로 결제부분취소 시도 시 - 성공(200)")
+    @Test
+    void paymentCancelPartialSuccess() throws Exception {
+        PayCancelRequestDto validPartialCancelRequestDto = PayCancelRequestDto.builder()
+                .managementNumber("thisTaxAmountIsInvalidAutoManualBoth")
+                .cancelAmount(BigDecimal.valueOf(3))
+                .build();
+
+        PaymentHistory paymentCancelPartialHistory = FakePaymentHistoryFactory.createPaymentCancelPartialHistory();
+        assertThat(paymentCancelPartialHistory.getPaymentTypeName()).isEqualTo("PAY_PARTIAL_CANCEL");
+        given(paymentService.cancelPartial(validPartialCancelRequestDto))
+                .willReturn(FakePaymentHistoryFactory.createPaymentCancelPartialHistory());
+
+        mockMvc.perform(patch("/payments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(validPartialCancelRequestDto)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.managementNumber", is("ZZZZZZZZZZZZZZZZZZZZ")));
     }
 }
