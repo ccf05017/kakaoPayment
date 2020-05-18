@@ -188,7 +188,7 @@ class PaymentRestControllerTests {
                 .cancelAmount(fakePaymentHistory.getPayAmount())
                 .build();
         given(paymentService.cancelAll(validCancelRequestDto))
-                .willReturn(fakeCancelPayment);
+                .willReturn(FakePaymentHistoryFactory.createPaymentCancelHistory());
 
         mockMvc.perform(put("/payments")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -215,7 +215,7 @@ class PaymentRestControllerTests {
                 .tax(manualTaxValue)
                 .build();
         given(paymentService.cancelAll(validCancelRequestDto))
-                .willReturn(fakeCancelPayment);
+                .willReturn(FakePaymentHistoryFactory.createPaymentCancelHistory());
 
         mockMvc.perform(put("/payments")
                 .contentType(MediaType.APPLICATION_JSON)

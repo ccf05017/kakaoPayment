@@ -47,7 +47,7 @@ public class PaymentService {
     }
 
     @Transactional
-    public Payment cancelAll(PayCancelRequestDto resource) throws Exception {
+    public PaymentHistory cancelAll(PayCancelRequestDto resource) throws Exception {
         PaymentHistory paymentHistory = paymentHistoryRepository.findByManagementNumber(resource.getManagementNumber())
                 .orElseThrow(NotExistPaymentHistoryException::new);
 
@@ -57,10 +57,10 @@ public class PaymentService {
         CardCompanyInfo cardCompanyInfo = CardCompanyInfo.createCardCompanyInfo(paymentCancel, encryptedCardInfo);
 
         cardCompanyInfoRepository.save(cardCompanyInfo);
-        paymentHistoryRepository.save(paymentCancelHistory);
+        PaymentHistory savedPaymentHistory = paymentHistoryRepository.save(paymentCancelHistory);
         paymentHistoryService.toCancelHistory(paymentHistory.getManagementNumber());
 
-        return paymentCancel;
+        return savedPaymentHistory;
     }
 
     public PaymentHistory cancelPartial(PayCancelRequestDto resource) throws Exception {

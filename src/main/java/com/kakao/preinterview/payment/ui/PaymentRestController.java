@@ -2,7 +2,6 @@ package com.kakao.preinterview.payment.ui;
 
 import com.kakao.preinterview.payment.application.PaymentService;
 import com.kakao.preinterview.payment.domain.history.PaymentHistory;
-import com.kakao.preinterview.payment.domain.payment.Payment;
 import com.kakao.preinterview.payment.ui.dto.DoPayRequestDto;
 import com.kakao.preinterview.payment.ui.dto.PayCancelRequestDto;
 import com.kakao.preinterview.payment.ui.dto.PayResponseDto;
@@ -34,10 +33,10 @@ public class PaymentRestController {
 
     @PutMapping("/payments")
     public PayResponseDto payCancelAll(@Valid @RequestBody PayCancelRequestDto resource) throws Exception {
-        Payment paymentCancelAll = paymentService.cancelAll(resource);
+        PaymentHistory paymentCancelAllHistory = paymentService.cancelAll(resource);
 
         return PayResponseDto.builder()
-                .managementNumber(paymentCancelAll.getManagementNumberValue())
+                .managementNumber(paymentCancelAllHistory.getManagementNumber())
                 .build();
     }
 
