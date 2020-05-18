@@ -2,7 +2,7 @@ PATCH http://localhost:8080/payments
 Content-Type: application/json
 
 {
-  "managementNumber": "739bae5fc8e6422cbf7c",
+  "managementNumber": "e2a518516638445da33c",
   "cancelAmount": 1100,
   "tax": 100
 }
