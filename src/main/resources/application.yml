@@ -16,4 +16,4 @@ spring:
       path: /h2-console
 
 encryption:
-  key: testKey
+  key: ${PAYMENT_KEY}

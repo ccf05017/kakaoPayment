@@ -2,12 +2,119 @@
 카카오페이 사전과제 프로젝트(20200513)
 
 ## 개발 프레임워크
+- Java 1.8
+- Spring Boot Web 2.2.7
+- Spring Boot Data JPA 2.2.7
+- Lombok
+- Spring Doc Open API
 
 ## 테이블 설계
+### 1. CARD_COMPANY_INFO table
+| Column | Type | 
+|:--------|:--------|
+| ID | BIGINT |
+| STRING_DATA | VARCHAR(500) |
+
+### 2. PAYMENT_HISTORY table
+| Column | Type | 
+|:--------|:--------|
+| ID | BIGINT |
+| CANCELED | BOOLEAN |
+| ENCRYPTED_CARD_INFO | VARCHAR(255) |
+| INSTALLMENT_MONTH_FORMAT_MONT | VARCHAR(255) |
+| MANAGEMENT_NUMBER | VARCHAR(255) |
+| PAY_AMOUNT | DECIMAL |
+| PAY_TYPE_NAME | VARCHAR(255) |
+| RELATED_MANAGEMENT_NUMBER | VARCHAR(255) |
+| REVISION | BIGINT |
+| TAX | DECIMAL |
 
 ## 문제해결 전략
+### 1. 개요
+- DDD + OOP로 요구 사항의 복잡도를 줄이려 했습니다.
+- 객체가 최대한 자신의 이름에 맞는 역할, 책임을 하도록 구성했습니다.
+    - 각 객체는 본인의 생명주기, 유효성 검증을 진행합니다.
+- 도메인 전문가가 없는 상태에서 컨텍스트를 함부로 나누는 건 유지보수에 어려움이 있을 수 있다고 생각해서 Aggregate 개념만 차용해서 사용했습니다.
+- 비즈니스 도메인 복잡도 관리를 위해 각각의 Aggregate에 대해 최대한 Aggregate Root로만 접근하도록 제어하려 했습니다.
+- 레이어드 아키텍처를 통해 UI와 비즈니스 로직이 최대한 섞이지 않도록 노력했습니다.
+
+### 2. Aggregate 설계
+1. Payment: 핵심 도메인. 사용자 요청에 따른 실질적인 결제 비즈니스 로직을 담당합니다.
+    - Payment(VO)
+        - Aggregate Root로 결제의 주요 정보를 모두 갖고 있습니다.
+        - 모든 결제는 해당 VO를 생성하거나 바꾸는 작업으로 진행됩니다.
+    - CardInfo(VO)
+        - 결제에 사용되는 카드 정보(카드 번호, CVC, 유효기간) 관리를 담당합니다.
+        - 각각의 정보에 대한 validation을 확인합니다.
+    - InstallmentMonth(VO)
+        - 할부 개월의 경우 0, 2 ~ 12 개월로 상수의 개념을 갖고 있어서 enum으로 구현했습니다.
+    - ManagementNumber (VO)
+        - 결제 진행 시 20자리의 유일한 키값을 생성하는 역할을 담당합니다.
+        - UUID 생성 로직에서 앞의 20자를 가져와서 유일값을 생성합니다.
+        - 중복 가능성이 아예 없지 않기 때문에 중복이 발생할 경우 예외 처리됩니다.
+    - PayInfo (VO)
+        - 결제 금액, 할부 개월, 결제 타입을 관리합니다.
+        - 결제 금액에 대한 validation을 처리합니다.
+    - PaymentFactory (VO)
+        - 결제, 결제전액취소 진행 시 Payment 객체를 생성하는 역할을 담당합니다.
+        - 입력한 값에 따라 불변식이 깨지지 않도록 결제를 진행합니다.
+    - PayType (VO)
+        - 결제 타입을 결제, 결제전체취소, 결제부분취소 세가지 상수로 관리합니다.
+        - 카드사에 보내는 정보와 시스템 내부에서 사용하는 용어를 한 개의 상수로 관리합니다.
+    - Tax (VO)
+        - 부가가치세 생성 및 검증 책임을 갖고 있습니다.
+        - 결제, 결제전체취소, 결제부분취소 시 세금을 수동, 자동으로 게산해서 객체를 생산하는 역할을 담당합니다.
+        
+2. CardCompany: 카드사에 보낼 데이터를 관리하는 Aggregate 입니다.
+    - CardCompanyInfo (Entity): Payment Aggregate에서 생성된 정보를 기반으로 카드사에 보내는 역할을 담당합니다.
+    - CardCompanyInfoRepository (Repository): 객체 영속화 영역의 추상화 객체입니다.
+    
+3. Encrypt: 카드 정보와 관련된 내용을 암복호화 하는 역할을 갖습니다.
+    - EncryptDecrypt (VO): AES256 알고리즘으로 카드 정보를 암복호화합니다.
+    - EncryptedCardInfo (VO): 카드 정보를 암복호화 해서 시스템 내부에서 읽을 수 있도록 합니다. 저장 시 무조건 암호화됩니다.
+    
+4. History: 결제 이력 정보를 관리합니다.
+    - PaymentHistory (Entity): Payment 핵심 Aggregate에서 진행된 결제 정보를 영속화하는 역할을 담당합니다. 저장시 카드 정보는 모두 암호화됩니다.
+    - PaymentHistoryRepository (Repository): 객체 영속호 영역의 추상화 객체입니다.
+    
+5. Parser: Payment 정보를 카드사 정보로 바꾸는 책임을 담당합니다.
+    - ParserType: 각 데이터 타입별로 카드사 포멧에 맞추는 역할을 상수로 관리합니다.
+    
+6. Domain Service: 하나의 Aggregate로 엮기 힘든 동작들을 묶어서 처리하는 영역입니다.
+
 
 ## 빌드 및 실행 방법
+### 1. 순수 jar
+#### 1.1 UNIX(Mac or Linux)
+```shell script
+# 프로젝트 루트 경로를 기준으로 진행해주세요
+export PAYMENT_KEY={type your own encryption key}
+./gradlew bootjar
+cd build/libs
+java -jar payment-0.0.1-SNAPSHOT.jar
+```
+#### 1.2 Window
+```shell script
+# 프로젝트 루트 경로를 기준으로 진행해주세요
+set PAYMENT_KEY={type your own encryption key}
+./gradlew.bat bootjar
+cd build/libs
+java -jar payment-0.0.1-SNAPSHOT.jar
+```
+
+## 2. Container
+### 2.1 Docker Compose
+```shell script
+# 프로젝트 루트 경로를 기준으로 진행해주세요
+./gradlew bootjar
+cp .env.default .env 
+# 복사한 .env 파일 내의 PAYMENT_KEY 환경변수를 설정해주세요.
+docker-compose up
+```
+### 2.2 Kubernetes
+
+## 인수 테스트
+- Swagger URL: 
 
 ## Todo List
 - [X] CardInfo
@@ -122,10 +229,10 @@
     1. 결제이력금액 검증 (`결제부분취소 요청 금액 >= 결제이력 금액` 진행 불가능)
     2. 결제이력잔액 검증 (`결제부분취소 요청 금액 > 결제이력 잔액(=결제이력 금액 - 결제부분취소 금액합)` 진행 불가능)
     3. 최종취소 여부 확인 (`결제부분취소 요청 금액 = 결제이력 잔액`에 따라 분기 진행)
-        a. 최종취소 진행 (같은 경우)
+        1. 최종취소 진행 (같은 경우)
             - 자동계산 된 부가가치세가 결제이력 부가가치세 잔액보다 적은 경우 진행 불가능 
             - 자동계산된 부가가치세가 결제이력 부가가치세 잔액보다 높은 경우 결제이력 부가가치세 잔액으로 취소한다. 
-        b. 최종취소 미진행 (결제부분취소 요청금액 < 결제이력 잔액)
+        2. 최종취소 미진행 (결제부분취소 요청금액 < 결제이력 잔액)
             - 무조건 진행한다.
             - 자동계산 된 부가가치세가 결제이력 부가가치세 잔액보다 높은 경우 결제이력 부가가치세 잔액으로 취소한다.
 
@@ -133,12 +240,10 @@
     1. 결제이력금액 검증 (`결제부분취소 요청 금액 >= 결제이력 금액` 진행 불가능)
     2. 결제이력잔액 검증 (`결제부분취소 요청 금액 > 결제이력 잔액(=결제이력 금액 - 결제부분취소 금액합)` 진행 불가능)
     3. 최종취소 여부 확인 (`결제부분취소 요청 금액 = 결제이력 잔액`에 따라 분기 진행)
-        a. 최종취소 진행 (같은 경우)
+        1. 최종취소 진행 (같은 경우)
             - 결제부분취소 부가가치세 요청 금액과 결제이력 부가가치세 잔액이 무조건 일치해야 한다.
             - 그 외 모두 실패
-        b. 최종취소 미진행 (결제부분취소 요청금액 < 결제이력 잔액)
+        2. 최종취소 미진행 (결제부분취소 요청금액 < 결제이력 잔액)
             - 결제부분취소 부가가치세 요청 금액 = 결제이력 부가가치세 잔액: 진행
             - 결제부분취소 부가가치세 요청 금액 < 결제이력 부가가치세 잔액: 진행
             - 결제부분취소 부가가치세 요청 금액 > 결제이력 부가가치세 잔액: 불가능
-
-## 인수 테스트

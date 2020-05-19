@@ -1,0 +1,11 @@
+version: '3'
+services:
+  kakao-payment-api:
+    image: openjdk:8
+    env_file: .env
+    volumes:
+      - ./run.sh:/home/kakaoPayment/run.sh
+      - ./build/libs:/home/kakaoPayment/libs
+    ports:
+      - 8080:8080
+    command: bash -c "cd /home/kakaoPayment && sh run.sh"

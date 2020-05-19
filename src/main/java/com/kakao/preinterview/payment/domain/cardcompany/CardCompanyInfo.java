@@ -15,7 +15,7 @@ public class CardCompanyInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 2000)
+    @Column(length = 500)
     private String stringData;
 
     private CardCompanyInfo(Long id, String stringData) {
