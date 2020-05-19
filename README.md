@@ -88,7 +88,7 @@
 #### 1.1 UNIX(Mac or Linux)
 ```shell script
 # 프로젝트 루트 경로를 기준으로 진행해주세요
-export PAYMENT_KEY={type your own encryption key}
+export payment-key={type your own encryption key}
 ./gradlew bootjar
 cd build/libs
 java -jar payment-0.0.1-SNAPSHOT.jar
@@ -96,25 +96,43 @@ java -jar payment-0.0.1-SNAPSHOT.jar
 #### 1.2 Window
 ```shell script
 # 프로젝트 루트 경로를 기준으로 진행해주세요
-set PAYMENT_KEY={type your own encryption key}
+set payment-key={type your own encryption key}
 ./gradlew.bat bootjar
 cd build/libs
 java -jar payment-0.0.1-SNAPSHOT.jar
 ```
 
 ## 2. Container
-### 2.1 Docker Compose
+### 2.1 Docker
+```shell script
+# 프로젝트 루트 경로를 기준으로 진행해주세요
+./gradlew bootjar
+docker build -t kakao-payment .
+docker run -d -p 8080:8080 --rm -e PAYMENT_KEY={put your own key value} kakao-payment
+```
+
+### 2.2 Docker Compose
 ```shell script
 # 프로젝트 루트 경로를 기준으로 진행해주세요
 ./gradlew bootjar
 cp .env.default .env 
-# 복사한 .env 파일 내의 PAYMENT_KEY 환경변수를 설정해주세요.
+# 복사한 .env 파일 내의 payment-key 환경변수를 설정해주세요.
 docker-compose up
 ```
-### 2.2 Kubernetes
 
-## 인수 테스트
-- Swagger URL: 
+### 2.3 Kubernetes
+```shell script
+# 프로젝트 루트 경로를 기준으로 진행해주세요
+# 노드 포트를 통해 외부로 연결되며 30001 포트를 사용합니다.
+echo -n '{put your own key value}' > ./payment-key
+kubectl create secret generic payment-key --from-file=./payment-key
+kubectl create -f kakao-payment.yaml
+```
+
+## 엔드 포인트 테스트
+- Swagger URL: http://localhost:8080/swagger-ui/index.html
+    - Swagger 창에 http://localhost:8080/v3/api-docs/ 입력
+    - 쿠버네티스로 배포한 경우 {쿠버네티스 노드 IP}:30001로 접근하셔야 됩니다.
 
 ## Todo List
 - [X] CardInfo
